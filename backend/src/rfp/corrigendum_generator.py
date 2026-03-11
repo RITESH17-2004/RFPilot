@@ -2,8 +2,10 @@ import logging
 import asyncio
 import functools
 import re
+import datetime
 from typing import Dict, Any, List
 from src.rag.answer_generation_engine import AnswerGenerationEngine
+from config import Config
 
 def sanitize_text(text: str) -> str:
     """Removes non-ASCII characters that cause encoding issues in some environments."""
@@ -26,9 +28,19 @@ class CorrigendumGenerator:
         # Sanitize inputs to prevent encoding crashes
         safe_original = sanitize_text(original_content[:1000])
         safe_changes = sanitize_text(changes)
+        
+        # 1. Automate Issuance Date
+        current_date = datetime.datetime.now().strftime("%d %B %Y")
+        
+        # 2. Retrieve Centralized Institutional Details
+        bank_name = Config.BANK_NAME
+        division = Config.BANK_DIVISION
+        officer = Config.OFFICER_NAME
+        contact = f"Email: {Config.OFFICER_CONTACT} | Tel: {Config.OFFICER_PHONE}"
+        location = Config.HEADQUARTERS
 
-        prompt = f"""You are a senior banking procurement officer. An RFP has been updated. 
-Generate a formal 'Corrigendum Notice' that clearly communicates these changes to all vendors.
+        prompt = f"""You are a senior banking procurement officer at {bank_name}. 
+Generate a formal 'Corrigendum Notice' that clearly communicates RFP updates to all participating vendors.
 
 ORIGINAL RFP CONTEXT (Sample):
 {safe_original}...
@@ -36,14 +48,24 @@ ORIGINAL RFP CONTEXT (Sample):
 SPECIFIC CHANGES MADE:
 {safe_changes}
 
-The notice must include:
-1. Official Corrigendum Number
-2. Date of Issuance
-3. Section-wise comparison: 'Original Provision' vs 'Revised Provision'
-4. Impact on submission deadlines (if any)
-5. A concluding statement that all other terms remain unchanged.
-
-Write in a formal, professional, and transparent tone.
+MANDATORY FORMATTING INSTRUCTIONS:
+1. Use a professional, institutional structure.
+2. HEADER: '{bank_name} - {division}'.
+3. INCLUDE: A unique 'Corrigendum Identification Number' (e.g., IB/CORR/2026/00X).
+4. DATE OF ISSUANCE: {current_date} (MANDATORY).
+5. COMPARISON TABLE: Present changes in a clear, text-based table format:
+   - SECTION / CLAUSE REFERENCE
+   - ORIGINAL PROVISION (Briefly summarized)
+   - REVISED PROVISION (The new official language)
+6. DEADLINES: Explicitly state if the 'Bid Submission Deadline' has changed.
+7. ISSUING AUTHORITY:
+   - Name: {officer}
+   - Contact: {contact}
+   - Location: {location}
+8. CLOSING: A standard legal disclaimer stating all other terms and conditions remain unchanged.
+9. TONE: Formal, precise, and authoritative. 
+10. DO NOT use markdown symbols like '**' or '###'. Use plain text capitalization for headings.
+11. DO NOT use placeholders like '[Insert Date]'. 
 """
 
         if self.decision_engine.use_mistral:

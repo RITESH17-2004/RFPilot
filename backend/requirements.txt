@@ -28,6 +28,6 @@ httpx
 demjson
 sqlalchemy
 pg8000
-python-multipart
 markdown
 xhtml2pdf
+jinja2

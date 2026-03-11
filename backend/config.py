@@ -46,3 +46,11 @@ class Config:
 
     # Specific Mistral model name
     MISTRAL_MODEL_NAME: str = _clean_env('MISTRAL_MODEL_NAME', 'mistral-small-latest')
+
+    # --- INSTITUTIONAL METADATA (Indian Bank) ---
+    BANK_NAME: str = "INDIAN BANK"
+    BANK_DIVISION: str = "DIGITAL PROCUREMENT CELL"
+    OFFICER_NAME: str = "General Manager (IT)"
+    OFFICER_CONTACT: str = "procurement@indianbank.co.in"
+    OFFICER_PHONE: str = "+91 44 2813 4300"
+    HEADQUARTERS: str = "Chennai, India"

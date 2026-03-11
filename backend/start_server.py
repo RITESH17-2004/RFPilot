@@ -262,6 +262,11 @@ class UserResponse(BaseModel):
     role: str
     status: str
     organization: Optional[str] = None
+    registration_id: Optional[str] = None
+    website: Optional[str] = None
+    vendor_category: Optional[str] = None
+    years_in_business: Optional[int] = None
+    contact_phone: Optional[str] = None
 
 class VendorActionRequest(BaseModel):
     action: str # 'APPROVE' or 'REJECT'
@@ -305,7 +310,12 @@ async def signup(request: UserSignupRequest, db: Session = Depends(get_db)):
         email=new_user.email,
         role=new_user.role,
         status=new_user.status,
-        organization=new_user.organization
+        organization=new_user.organization,
+        registration_id=new_user.registration_id,
+        website=new_user.website,
+        vendor_category=new_user.vendor_category,
+        years_in_business=new_user.years_in_business,
+        contact_phone=new_user.contact_phone
     )
 
 @app.post("/auth/login", response_model=UserResponse)
@@ -328,7 +338,12 @@ async def login(request: UserLoginRequest, db: Session = Depends(get_db)):
         email=user.email,
         role=user.role,
         status=user.status,
-        organization=user.organization
+        organization=user.organization,
+        registration_id=user.registration_id,
+        website=user.website,
+        vendor_category=user.vendor_category,
+        years_in_business=user.years_in_business,
+        contact_phone=user.contact_phone
     )
 
 # --- VENDOR REGISTRY (ADMIN) ---
@@ -343,7 +358,12 @@ async def list_vendors(db: Session = Depends(get_db)):
             email=v.email,
             role=v.role,
             status=v.status,
-            organization=v.organization
+            organization=v.organization,
+            registration_id=v.registration_id,
+            website=v.website,
+            vendor_category=v.vendor_category,
+            years_in_business=v.years_in_business,
+            contact_phone=v.contact_phone
         ) for v in vendors
     ]
 

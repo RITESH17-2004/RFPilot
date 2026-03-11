@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Loader2, History, Search, ShieldCheck, User, Clock, FileCheck, Filter } from 'lucide-react';
+import { ArrowLeft, Loader2, History, Search, ShieldCheck, User, Clock, FileCheck, Filter, FileText } from 'lucide-react';
 import Link from 'next/link';
 import BankSidebar from '@/components/BankSidebar';
 

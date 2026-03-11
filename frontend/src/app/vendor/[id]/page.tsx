@@ -1,7 +1,14 @@
 "use client";
-import { useEffect, useState, use } from 'react';
-import { ArrowLeft, Send, MessageSquare, AlertTriangle, FileText, Download, Info, Loader2, CheckCircle } from 'lucide-react';
+import { useEffect, useState, use} from 'react';
+import { 
+  ArrowLeft, Send, MessageSquare, AlertTriangle, FileText, Download, 
+  Info, Loader2, CheckCircle, Search, LayoutDashboard, History, 
+  HelpCircle, Eye, ShieldCheck, ExternalLink, Calendar, 
+  ChevronRight, Building2, Bell, Clock, X, Sparkles, ArrowRight
+} from 'lucide-react';
 import Link from 'next/link';
+
+type TabType = 'document' | 'corrigenda' | 'queries';
 
 export default function VendorRFPDetail({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -12,8 +19,9 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
   const [newQuery, setNewQuery] = useState("");
   const [asking, setAsking] = useState(false);
   const [corrigenda, setCorrigenda] = useState<any[]>([]);
-
+  const [activeTab, setActiveTab] = useState<TabType>('document');
   const [selectedCorrigendum, setSelectedCorrigendum] = useState<any>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const BACKEND_URL = "http://localhost:8000";
 
@@ -45,238 +53,392 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
   if (!rfp) return (
     <div className="min-h-screen bg-[#0a1628] flex flex-col items-center justify-center text-white gap-4">
       <Loader2 size={32} className="animate-spin text-[#c8a96a]" />
-      <p className="text-slate-400 font-semibold tracking-widest text-sm uppercase">Loading RFP Document...</p>
+      <p className="text-slate-400 font-semibold tracking-widest text-sm uppercase italic">Securing Connection...</p>
     </div>
   );
 
   return (
-    <div className="h-screen bg-[#f0f4f8] flex flex-col overflow-hidden relative">
+    <div className="h-screen bg-[#f8fafc] flex flex-col overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-900">
+      
       {/* Modal for Full Corrigendum Notice */}
       {selectedCorrigendum && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#0a1628]/80 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-200">
-            <div className="px-8 py-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600">
-                  <AlertTriangle size={24} />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#0a1628]/60 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in slide-in-from-bottom-8 duration-500 border border-white/20">
+            <div className="px-10 py-8 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-5">
+                <div className="w-14 h-14 bg-amber-100 rounded-[1.25rem] flex items-center justify-center text-amber-600 shadow-inner">
+                  <AlertTriangle size={28} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-black text-slate-900 leading-tight">Official Corrigendum Notice</h2>
-                  <p className="text-xs font-bold text-amber-600 uppercase tracking-widest">Amendment Version {selectedCorrigendum.version}</p>
+                  <h2 className="text-xl font-black text-slate-900 tracking-tight">Official Amendment</h2>
+                  <p className="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em]">Revision Protocol V{selectedCorrigendum.version}</p>
                 </div>
               </div>
               <button 
                 onClick={() => setSelectedCorrigendum(null)}
-                className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-all"
+                className="w-12 h-12 flex items-center justify-center rounded-2xl hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-all active:scale-90"
               >
-                <ArrowLeft size={20} className="rotate-90" />
+                <X size={24} />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto p-8 prose prose-slate max-w-none">
-              <div className="mb-6 p-4 bg-amber-50 rounded-2xl border border-amber-100">
-                <h4 className="text-[10px] font-black text-amber-700 uppercase tracking-[0.2em] mb-1">Executive Summary of Changes</h4>
-                <p className="text-sm font-bold text-slate-800 leading-relaxed">{selectedCorrigendum.change_summary}</p>
+            <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
+              <div className="mb-8 p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl border border-amber-100 shadow-sm">
+                <h4 className="text-[11px] font-black text-amber-700 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+                  <Info size={14} /> Executive Summary
+                </h4>
+                <p className="text-base font-bold text-slate-800 leading-relaxed italic">"{selectedCorrigendum.change_summary}"</p>
               </div>
-              <div className="whitespace-pre-wrap text-sm text-slate-600 leading-loose font-medium">
+              <div className="whitespace-pre-wrap text-[15px] text-slate-600 leading-relaxed font-medium bg-slate-50/30 p-6 rounded-3xl border border-slate-100">
                 {selectedCorrigendum.full_notice}
               </div>
             </div>
-            <div className="p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
-                <Info size={14} /> Issued on {new Date(selectedCorrigendum.created_at).toLocaleDateString()}
+            <div className="p-8 bg-white border-t border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-2.5 text-slate-400 text-[10px] font-black uppercase tracking-widest bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
+                <Calendar size={14} className="text-indigo-500" /> Issued {new Date(selectedCorrigendum.created_at).toLocaleDateString()}
               </div>
               <button 
                 onClick={() => setSelectedCorrigendum(null)}
-                className="px-6 py-2.5 bg-[#0a1628] text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-all shadow-lg"
+                className="px-8 py-3.5 bg-[#0a1628] text-[#c8a96a] rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 active:scale-95"
               >
-                Acknowledge Receipt
+                Confirm Receipt
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Top Navigation */}
-      <header className="bg-[#0a1628] h-[60px] px-6 flex items-center justify-between shrink-0 shadow-xl shadow-black/20">
-        <div className="flex items-center gap-4">
-          <Link href="/vendor" className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all">
-            <ArrowLeft size={18} />
+      {/* Corporate Header */}
+      <header className="bg-white h-[72px] border-b border-slate-200 px-8 flex items-center justify-between shrink-0 z-20 shadow-sm">
+        <div className="flex items-center gap-6">
+          <Link href="/vendor" className="group flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-indigo-50 text-slate-500 hover:text-indigo-600 rounded-2xl transition-all border border-slate-100 font-bold text-xs uppercase tracking-widest active:scale-95">
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back
           </Link>
-          <div className="w-px h-6 bg-white/10" />
-          <div>
-            <h1 className="text-sm font-bold text-white line-clamp-1">{rfp.title}</h1>
-            <p className="text-[10px] text-[#c8a96a] font-bold uppercase tracking-widest">RFP #{rfp.id} · Secure Document Stream</p>
+          <div className="w-px h-8 bg-slate-200" />
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+                <Building2 size={16} className="text-[#c8a96a]" />
+                <h1 className="text-lg font-black text-[#0a1628] tracking-tight line-clamp-1">{rfp.title}</h1>
+            </div>
+            <div className="flex items-center gap-3 mt-0.5">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tender ID: <span className="text-indigo-600 font-black">#RFP-{rfp.id.toString().padStart(4, '0')}</span></span>
+                <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest flex items-center gap-1">
+                    <ShieldCheck size={10} /> Verified Opportunity
+                </span>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-            {corrigenda.length > 0 && (
-                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-lg text-[10px] font-black text-amber-500 uppercase tracking-widest">
-                    <AlertTriangle size={12} /> {corrigenda.length} AMENDMENTS ACTIVE
-                </div>
-            )}
+
+        <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                <Clock size={12} className="text-indigo-500" /> Issued {new Date(rfp.created_at).toLocaleDateString()}
+            </div>
             <a
-            href={`${BACKEND_URL}${rfp.pdf_url}`}
-            download
-            className="flex items-center gap-2 px-4 py-2 bg-[#c8a96a] hover:bg-[#b8993a] text-[#0a1628] rounded-xl text-xs font-bold transition-all shadow-lg shadow-amber-900/20"
+                href={`${BACKEND_URL}${rfp.pdf_url}`}
+                download
+                className="flex items-center gap-2.5 px-6 py-3 bg-[#0a1628] hover:bg-indigo-700 text-white rounded-2xl text-xs font-black uppercase tracking-[0.15em] transition-all shadow-xl shadow-slate-200 active:scale-95 group"
             >
-            <Download size={14} /> Download PDF
+                <Download size={14} className="group-hover:translate-y-0.5 transition-transform text-[#c8a96a]" /> Export Document
             </a>
         </div>
       </header>
 
-      {/* Main Split Layout */}
+      {/* Main Layout */}
       <div className="flex-1 flex overflow-hidden">
+        
+        {/* Sidebar Navigation */}
+        <aside className="w-24 bg-white border-r border-slate-200 flex flex-col items-center py-8 gap-8 shrink-0 z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)]">
+            <button 
+                onClick={() => setActiveTab('document')}
+                className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all group ${activeTab === 'document' ? 'bg-[#0a1628] text-[#c8a96a] shadow-xl shadow-indigo-100' : 'text-slate-400 hover:bg-slate-50'}`}
+            >
+                <FileText size={20} />
+                <span className="text-[8px] font-black uppercase tracking-tighter">Specs</span>
+            </button>
 
-        {/* Left: PDF Viewer */}
-        <div className="w-[62%] bg-[#1e1e2e] relative border-r border-[#0a1628]/40 flex flex-col">
-          <iframe
-            src={`${BACKEND_URL}${rfp.pdf_url}#toolbar=0&navpanes=0`}
-            className="w-full flex-1 border-none"
-            title="RFP Document Viewer"
-          />
-          <div className="absolute bottom-5 left-5 flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-md text-white rounded-full text-[10px] font-bold border border-white/10">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>AES-256 Encrypted · Secure Viewer</span>
-          </div>
-        </div>
+            <button 
+                onClick={() => setActiveTab('corrigenda')}
+                className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all group relative ${activeTab === 'corrigenda' ? 'bg-[#0a1628] text-[#c8a96a] shadow-xl shadow-indigo-100' : 'text-slate-400 hover:bg-slate-50'}`}
+            >
+                <History size={20} />
+                <span className="text-[8px] font-black uppercase tracking-tighter">History</span>
+                {corrigenda.length > 0 && (
+                    <span className="absolute top-2 right-2 w-4 h-4 bg-amber-500 text-white text-[8px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-sm animate-bounce">
+                        {corrigenda.length}
+                    </span>
+                )}
+            </button>
 
-        {/* Right: Intelligence Panel */}
-        <div className="w-[38%] flex flex-col bg-white overflow-hidden">
+            <button 
+                onClick={() => setActiveTab('queries')}
+                className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all group ${activeTab === 'queries' ? 'bg-[#0a1628] text-[#c8a96a] shadow-xl shadow-indigo-100' : 'text-slate-400 hover:bg-slate-50'}`}
+            >
+                <HelpCircle size={20} />
+                <span className="text-[8px] font-black uppercase tracking-tighter">Support</span>
+            </button>
 
-          {/* Corrigenda Section - PROFESSIONAL ENHANCEMENT */}
-          <div className={`shrink-0 border-b border-slate-100 flex flex-col max-h-[42%] ${corrigenda.length > 0 ? 'bg-slate-50/50' : 'bg-slate-50/20'}`}>
-            <div className="px-5 py-3.5 flex items-center justify-between border-b border-slate-200/60 bg-white">
-              <div className="flex items-center gap-2.5">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${corrigenda.length > 0 ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-300'}`}>
-                    <AlertTriangle size={16} />
+            <div className="mt-auto flex flex-col items-center gap-6">
+                <div className="w-10 h-10 rounded-full border-2 border-slate-100 flex items-center justify-center text-slate-300">
+                    <ShieldCheck size={18} />
                 </div>
-                <div>
-                    <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest">Regulatory Updates</h3>
-                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Official Amendments & Corrigenda</p>
-                </div>
-              </div>
-              <span className={`px-2.5 py-1 rounded-full text-[9px] font-black border ${corrigenda.length > 0 ? 'bg-amber-500 border-amber-600 text-white shadow-sm shadow-amber-200' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
-                {corrigenda.length} ISSUED
-              </span>
             </div>
+        </aside>
+
+        {/* Content Area */}
+        <div className="flex-1 flex overflow-hidden">
             
-            <div className="overflow-y-auto px-4 py-4 space-y-3 custom-scrollbar">
-              {corrigenda.map((c: any) => (
-                <button 
-                    key={c.id} 
-                    onClick={() => setSelectedCorrigendum(c)}
-                    className="w-full group text-left bg-white p-4 rounded-2xl border border-slate-200 hover:border-amber-400 hover:shadow-md hover:shadow-amber-100 transition-all relative overflow-hidden active:scale-[0.98]"
-                >
-                  <div className="absolute top-0 right-0 p-1 bg-amber-500 text-white rounded-bl-lg transform translate-x-8 group-hover:translate-x-0 transition-transform">
-                    <Info size={10} />
-                  </div>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                        <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">V{c.version} AMENDMENT</span>
-                    </div>
-                    <span className="text-[9px] text-slate-400 font-bold bg-slate-50 px-2 py-0.5 rounded-md">{new Date(c.created_at).toLocaleDateString()}</span>
-                  </div>
-                  <p className="text-xs font-bold text-slate-700 group-hover:text-amber-700 transition-colors line-clamp-1 mb-1.5">{c.change_summary}</p>
-                  <div className="flex items-center justify-between">
-                    <p className="text-[10px] text-slate-400 font-medium line-clamp-1 italic">Click to view official change notice...</p>
-                    <ArrowLeft size={12} className="rotate-180 text-slate-300 group-hover:text-amber-500 transition-colors" />
-                  </div>
-                </button>
-              ))}
-              
-              {corrigenda.length === 0 && (
-                <div className="py-10 text-center border-2 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center bg-white/50">
-                  <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3">
-                    <FileText size={20} className="text-slate-200" />
-                  </div>
-                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Compliance Status: No Changes</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* AI Chat Section */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-slate-100 flex items-center gap-2 bg-white">
-              <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md shadow-indigo-200">
-                <MessageSquare size={13} className="text-white" />
-              </div>
-              <div>
-                <h3 className="text-xs font-black text-slate-800">AI RAG Assistant</h3>
-                <p className="text-[10px] text-slate-400 font-semibold">Answers grounded in RFP source content</p>
-              </div>
-            </div>
-
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-5 bg-slate-50/40">
-              {queries.length === 0 && (
-                <div className="h-full flex flex-col items-center justify-center text-center py-12 opacity-70">
-                  <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-3">
-                    <MessageSquare size={24} className="text-slate-300" />
-                  </div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
-                    Ask a question about<br />this RFP document
-                  </p>
-                </div>
-              )}
-              {queries.map((q: any) => (
-                <div key={q.id} className="space-y-3">
-                  {/* User question */}
-                  <div className="flex justify-end">
-                    <div className="max-w-[85%] bg-[#0a1628] text-white px-4 py-3 rounded-2xl rounded-tr-sm text-xs font-medium leading-relaxed shadow-sm">
-                      {q.question}
-                    </div>
-                  </div>
-                  {/* AI Answer */}
-                  <div className="flex justify-start">
-                    <div className="max-w-[90%]">
-                      <div className="flex items-center gap-1.5 mb-1.5">
-                        <div className="w-5 h-5 bg-indigo-600 rounded-md flex items-center justify-center">
-                          <MessageSquare size={10} className="text-white" />
+            {/* Viewport (Center) */}
+            <main className="flex-1 bg-slate-100/50 relative overflow-hidden flex flex-col p-6">
+                {activeTab === 'document' && (
+                    <div className="w-full h-full bg-white rounded-[2rem] shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-500">
+                        <div className="h-14 bg-slate-50 border-b border-slate-100 px-8 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <Eye size={16} className="text-slate-400" />
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Encrypted Document Viewer</span>
+                            </div>
+                            <div className="flex gap-2">
+                                <div className="w-3 h-3 rounded-full bg-red-400/20" />
+                                <div className="w-3 h-3 rounded-full bg-amber-400/20" />
+                                <div className="w-3 h-3 rounded-full bg-emerald-400/20" />
+                            </div>
                         </div>
-                        <span className="text-[9px] font-black text-indigo-600 uppercase tracking-widest">AI Officer</span>
-                        {q.is_duplicate && (
-                          <span className="flex items-center gap-0.5 text-[9px] font-bold text-slate-400">
-                            <CheckCircle size={9} /> Cached
-                          </span>
-                        )}
-                      </div>
-                      <div className="bg-white text-slate-700 px-4 py-3 rounded-2xl rounded-tl-sm text-xs leading-relaxed border border-slate-200 shadow-sm">
-                        {q.answer || (
-                          <span className="text-slate-400 italic flex items-center gap-2">
-                            <Loader2 size={12} className="animate-spin" /> Awaiting bank approval...
-                          </span>
-                        )}
-                      </div>
+                        <iframe
+                            src={`${BACKEND_URL}${rfp.pdf_url}#toolbar=0&navpanes=0`}
+                            className="w-full flex-1 border-none bg-slate-800"
+                            title="RFP Document Viewer"
+                        />
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                )}
 
-            {/* Input */}
-            <div className="p-4 bg-white border-t border-slate-100">
-              <form onSubmit={handleAskQuery} className="relative">
-                <textarea
-                  rows={2}
-                  placeholder="Ask about compliance, technical requirements..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3.5 pl-4 pr-14 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
-                  value={newQuery}
-                  onChange={e => setNewQuery(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAskQuery(e as any); } }}
-                />
-                <button
-                  disabled={asking || !newQuery.trim()}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-[#0a1628] text-white rounded-xl flex items-center justify-center hover:bg-indigo-600 transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
-                >
-                  {asking ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
-                </button>
-              </form>
-            </div>
-          </div>
+                {activeTab === 'corrigenda' && (
+                    <div className="w-full h-full flex flex-col animate-in slide-in-from-right-8 duration-500">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 className="text-2xl font-black text-[#0a1628] uppercase tracking-tight">Tender Revision Ledger</h2>
+                                <p className="text-sm font-medium text-slate-500">Chronological history of official modifications and scope adjustments.</p>
+                            </div>
+                            <div className="px-6 py-2 bg-white border border-slate-200 rounded-2xl text-xs font-black text-slate-400 uppercase tracking-widest shadow-sm">
+                                {corrigenda.length} Amendments Issued
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar">
+                            {corrigenda.length > 0 ? (
+                                <div className="relative pl-8 ml-4 border-l-2 border-slate-200 space-y-12 pb-12">
+                                    {corrigenda.map((c: any, index: number) => {
+                                        const isLatest = index === corrigenda.length - 1;
+                                        return (
+                                            <div key={c.id} className="relative">
+                                                {/* Timeline Node */}
+                                                <div className={`absolute -left-[41px] top-0 w-5 h-5 rounded-full border-4 border-white shadow-sm transition-all ${isLatest ? 'bg-[#e81c24] scale-125 ring-4 ring-red-100' : 'bg-slate-300'}`} />
+                                                
+                                                {/* Content Card */}
+                                                <div 
+                                                    onClick={() => setSelectedCorrigendum(c)}
+                                                    className={`group bg-white rounded-[2rem] border transition-all cursor-pointer relative flex flex-col md:flex-row overflow-hidden active:scale-[0.99] ${isLatest ? 'border-[#004a99] shadow-xl shadow-blue-900/5 ring-1 ring-[#004a99]/10' : 'border-slate-200 shadow-sm hover:border-slate-400 hover:shadow-md'}`}
+                                                >
+                                                    {/* Side Highlight */}
+                                                    <div className={`w-2 shrink-0 ${isLatest ? 'bg-[#004a99]' : 'bg-slate-100 group-hover:bg-slate-300'}`} />
+                                                    
+                                                    <div className="p-8 flex-1">
+                                                        <div className="flex items-center justify-between mb-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${isLatest ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-slate-50 text-slate-500 border border-slate-100'}`}>
+                                                                    {isLatest ? 'Latest Amendment' : 'Past Revision'}
+                                                                </span>
+                                                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Revision V0{c.version}</span>
+                                                            </div>
+                                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                                <Calendar size={12} /> {new Date(c.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                            </span>
+                                                        </div>
+                                                        
+                                                        <h3 className={`text-lg font-black tracking-tight mb-3 ${isLatest ? 'text-[#004a99]' : 'text-slate-900'}`}>
+                                                            {c.change_summary}
+                                                        </h3>
+                                                        
+                                                        <p className="text-sm font-medium text-slate-500 leading-relaxed mb-6 line-clamp-2">
+                                                            {c.full_notice.substring(0, 200)}...
+                                                        </p>
+                                                        
+                                                        <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                                                            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2 group-hover:gap-3 transition-all">
+                                                                View Official Notice <ArrowRight size={14} />
+                                                            </span>
+                                                            <div className="flex -space-x-2">
+                                                                <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-400">IB</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    }).reverse()} {/* Show latest at top */}
+                                </div>
+                            ) : (
+                                <div className="h-full flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-200 rounded-[3rem] text-center p-12 opacity-80">
+                                    <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                                        <History size={32} className="text-slate-200" />
+                                    </div>
+                                    <h3 className="text-xl font-black text-slate-400 uppercase tracking-widest mb-2">Baseline Configuration</h3>
+                                    <p className="text-sm font-medium text-slate-400 max-w-xs uppercase tracking-tighter">No formal amendments have been recorded against the original RFP issuance.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'queries' && (
+                    <div className="w-full h-full flex flex-col animate-in slide-in-from-right-8 duration-500">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 className="text-2xl font-black text-[#0a1628] uppercase tracking-tight">Intelligence Support</h2>
+                                <p className="text-sm font-medium text-slate-500">Instant AI clarifications grounded in official tender documentation.</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="relative w-64">
+                                    <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search history..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 flex gap-8 overflow-hidden pb-4">
+                            {/* Chat Thread */}
+                            <div className="flex-1 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+                                <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-[#0a1628] rounded-xl flex items-center justify-center text-[#c8a96a] shadow-lg shadow-indigo-100">
+                                            <MessageSquare size={18} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Resolution Channel</p>
+                                            <p className="text-xs font-bold text-slate-900">Official RAG Protocol Active</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase border border-emerald-100">
+                                        <div className="w-1 h-1 bg-emerald-500 rounded-full animate-ping" />
+                                        Grounded Mode
+                                    </div>
+                                </div>
+
+                                <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar bg-slate-50/20">
+                                    {queries.length === 0 && (
+                                        <div className="h-full flex flex-col items-center justify-center text-center opacity-60">
+                                            <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center mb-6 shadow-sm">
+                                                <HelpCircle size={32} className="text-slate-200" />
+                                            </div>
+                                            <h3 className="text-lg font-black text-slate-400 uppercase tracking-[0.15em] mb-2">No Queries Logged</h3>
+                                            <p className="text-xs font-bold text-slate-400 max-w-xs leading-relaxed uppercase tracking-tighter">Submit a question regarding compliance, technical specifications, or timeline.</p>
+                                        </div>
+                                    )}
+
+                                    {queries.filter(q => q.question.toLowerCase().includes(searchTerm.toLowerCase())).map((q: any) => (
+                                        <div key={q.id} className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <div className="flex justify-end">
+                                                <div className="max-w-[80%] bg-[#0a1628] text-white px-6 py-4 rounded-[1.75rem] rounded-tr-md text-sm font-medium shadow-xl shadow-slate-200/50 leading-relaxed border border-white/10">
+                                                    {q.question}
+                                                </div>
+                                            </div>
+                                            <div className="flex justify-start">
+                                                <div className="max-w-[85%] space-y-2">
+                                                    <div className="flex items-center gap-2 mb-1 pl-2">
+                                                        <div className="w-6 h-6 bg-indigo-600 rounded-lg flex items-center justify-center text-white shadow-sm">
+                                                            <LayoutDashboard size={12} />
+                                                        </div>
+                                                        <span className="text-[10px] font-black text-[#0a1628] uppercase tracking-widest">RAG Response</span>
+                                                        <div className="w-1 h-1 bg-slate-300 rounded-full" />
+                                                        <span className="text-[9px] font-bold text-slate-400">#00{q.id}</span>
+                                                    </div>
+                                                    <div className="bg-white border border-slate-200 px-6 py-5 rounded-[1.75rem] rounded-tl-md text-sm text-slate-700 leading-relaxed shadow-sm font-medium">
+                                                        {q.answer || (
+                                                            <div className="flex items-center gap-3 py-1">
+                                                                <Loader2 size={16} className="animate-spin text-indigo-500" />
+                                                                <span className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Processing via Institution Node...</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="p-8 bg-white border-t border-slate-100">
+                                    <form onSubmit={handleAskQuery} className="relative group">
+                                        <div className="absolute inset-0 bg-indigo-600 rounded-3xl blur-xl opacity-0 group-focus-within:opacity-10 transition-opacity" />
+                                        <div className="relative flex items-center">
+                                            <input
+                                                placeholder="Inquire about technical specifications, compliance standards..."
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] py-5 pl-8 pr-20 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500 transition-all shadow-inner"
+                                                value={newQuery}
+                                                onChange={e => setNewQuery(e.target.value)}
+                                            />
+                                            <button
+                                                disabled={asking || !newQuery.trim()}
+                                                className="absolute right-3 w-14 h-14 bg-[#0a1628] text-[#c8a96a] rounded-2xl flex items-center justify-center hover:bg-slate-800 transition-all shadow-xl shadow-slate-300/50 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 active:shadow-inner"
+                                            >
+                                                {asking ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div className="mt-4 flex items-center justify-center gap-6 text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">
+                                        <span className="flex items-center gap-1.5"><ShieldCheck size={12} className="text-emerald-400" /> End-to-End Encrypted</span>
+                                        <div className="w-1 h-1 bg-slate-200 rounded-full" />
+                                        <span className="flex items-center gap-1.5"><LayoutDashboard size={12} className="text-indigo-400" /> Grounded in Source PDF</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Info Panel */}
+                            <div className="hidden xl:flex w-80 flex-col gap-6 shrink-0 overflow-y-auto custom-scrollbar">
+                                <div className="bg-gradient-to-br from-[#0a1628] to-[#122654] rounded-[2rem] p-8 text-white shadow-xl shadow-indigo-100 border border-white/5 relative overflow-hidden">
+                                    <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-3xl" />
+                                    <Bell size={20} className="text-[#c8a96a] mb-6" />
+                                    <h4 className="text-lg font-black tracking-tight mb-2 uppercase">Pro Tip</h4>
+                                    <p className="text-sm font-medium text-slate-300 leading-relaxed mb-6">Our RAG engine scans the technical specs of this RFP specifically to answer your queries.</p>
+                                    <div className="bg-white/10 p-4 rounded-2xl border border-white/10 text-[10px] font-black uppercase tracking-widest text-[#c8a96a] flex items-center gap-2">
+                                        <Sparkles size={14} /> Higher Accuracy Protocol
+                                    </div>
+                                </div>
+
+                                <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm">
+                                    <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6 border-b border-slate-50 pb-4">Submission Status</h4>
+                                    <div className="space-y-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                                                <CheckCircle size={18} />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Eligibility</p>
+                                                <p className="text-xs font-bold text-slate-800 uppercase tracking-tighter">Verified Provider</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                                                <FileText size={18} />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Proposal</p>
+                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter italic">Pending Upload</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </main>
         </div>
       </div>
     </div>
   );
 }
+

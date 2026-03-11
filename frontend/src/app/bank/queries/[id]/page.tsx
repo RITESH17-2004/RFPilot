@@ -31,7 +31,7 @@ export default function ReviewQueries({ params }: { params: Promise<{ id: string
       const res = await fetch(`${BACKEND_URL}/bank/query/${queryId}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ approved_answer: currentAnswer })
+        body: JSON.stringify({ bank_answer: currentAnswer })
       });
       if (res.ok) {
         // Update local state to show it as answered
