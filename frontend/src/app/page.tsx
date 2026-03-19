@@ -89,7 +89,7 @@ export default function Home() {
                     <div className="absolute bottom-[45%] left-[-5%] z-30 animate-float-delayed"><DomainBadge icon={Layers} label="RAG" color="text-blue-400" /></div>
 
                     {/* ALL-NODE STOCHASTIC DATA BEAMS (SVG) */}
-                    <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400">
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible" viewBox="0 0 400 400">
                         <defs>
                             <linearGradient id="beamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="0%" stopColor="transparent" />
@@ -98,17 +98,17 @@ export default function Home() {
                             </linearGradient>
                         </defs>
                         {/* 1. Legal (Top Right) */}
-                        <path d="M 320 80 Q 260 140 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-1" />
+                        <path d="M 310 33 Q 255 116 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-1" />
                         {/* 2. Tech (Bottom Left) */}
-                        <path d="M 80 340 Q 140 270 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-2" />
+                        <path d="M 51 356 Q 125 278 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-2" />
                         {/* 3. Rules (Top Left) */}
-                        <path d="M 100 120 Q 150 160 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-3" />
+                        <path d="M 63 73 Q 131 136 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-3" />
                         {/* 4. Audit (Bottom Right) */}
-                        <path d="M 320 320 Q 260 260 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-4" />
+                        <path d="M 329 366 Q 264 283 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-4" />
                         {/* 5. Vendors (Far Right) */}
-                        <path d="M 380 200 Q 290 200 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-5" />
+                        <path d="M 389 208 Q 294 204 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-5" />
                         {/* 6. RAG (Far Left) */}
-                        <path d="M 20 200 Q 110 200 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-6" />
+                        <path d="M 11 191 Q 105 195 200 200" stroke="url(#beamGrad)" strokeWidth="2" strokeDasharray="6,6" fill="none" className="animate-beam-random-6" />
                     </svg>
                 </div>
             </div>
@@ -120,16 +120,16 @@ export default function Home() {
                 <h2 className="text-xs font-black text-blue-600 uppercase tracking-[0.4em] mb-4">Lifecycle Workflow</h2>
                 <h3 className="text-4xl font-black text-[#0a1628] uppercase tracking-tight">The Neural Procurement Loop</h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
-                <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 -translate-y-1/2 z-0" />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+                <div className="hidden md:block absolute top-[28%] left-1/2 -ml-[50%] w-full h-0.5 bg-slate-100 z-0" />
                 {[
-                    { step: '01', title: 'Neural Drafting', desc: 'AI generates a 100% compliant RFP draft using RAG context.', icon: Brain },
-                    { step: '02', title: 'Sovereign Review', desc: 'Bank officials refine the draft in a secure, internal environment.', icon: FileSearch },
-                    { step: '03', title: 'Live Publication', desc: 'Document goes live with an instant, dedicated Q&A assistant.', icon: Globe },
-                    { step: '04', title: 'Resolutions', desc: 'Intelligent corrigenda and vendor query approvals finalize the bid.', icon: CheckCircle2 }
+                    { step: '01', title: 'Neural Drafting', desc: 'AI queries specialized FAISS vector silos (Legal, Tech, Rules) to dynamically assemble a fully compliant RFP draft.', icon: Brain },
+                    { step: '02', title: 'Sovereign Review', desc: 'Secure internal refinement. Surgical text updates are applied silently to the draft without generating a formal Corrigendum.', icon: FileSearch },
+                    { step: '03', title: 'Live Publication', desc: 'Published RFP is instantly embedded into the live Vector Store, waking up the Intelligent Agent for real-time Vendor Q&A.', icon: Globe },
+                    { step: '04', title: 'Resolutions', desc: 'Admins approve automated RAG vendor responses while the model directly generates formal Corrigendum PDF notices for major updates.', icon: CheckCircle2 }
                 ].map((item, i) => (
                     <div key={i} className="relative z-10 p-8 bg-white border border-slate-100 rounded-[2.5rem] shadow-xl shadow-slate-200/20 text-center group hover:border-[#0033a0] transition-all">
-                        <div className="w-12 h-12 bg-[#0a1628] text-[#c8a96a] rounded-full flex items-center justify-center mx-auto mb-6 font-black text-sm shadow-lg group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 bg-[#0a1628] text-[#c8a96a] rounded-full flex items-center justify-center mx-auto mb-6 font-black text-sm shadow-lg">
                             {item.step}
                         </div>
                         <h4 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-3">{item.title}</h4>
@@ -140,26 +140,33 @@ export default function Home() {
         </div>
 
         {/* INTELLIGENCE MODULES */}
-        <div className="mb-40 p-12 bg-[#0a1628] rounded-[4rem] shadow-3xl relative overflow-hidden text-left">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] -mr-40 -mt-40" />
+        <div className="mb-40 p-12 bg-gradient-to-br from-[#0033a0]/[0.04] via-blue-50/60 to-indigo-50/40 rounded-[4rem] border border-blue-100/60 relative overflow-hidden text-left">
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#0033a0]/[0.04] rounded-full blur-[120px] -mr-40 -mt-40" />
+            <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-indigo-100/30 rounded-full blur-[100px] -ml-20 -mb-20" />
             <div className="flex flex-col lg:flex-row gap-20 relative z-10">
                 <div className="lg:w-1/3">
-                    <h2 className="text-xs font-black text-blue-400 uppercase tracking-[0.4em] mb-6">Brain Architecture</h2>
-                    <h3 className="text-4xl font-black text-white uppercase tracking-tight leading-tight mb-8">Sovereign <br/>Intelligence <br/>Modules</h3>
-                    <p className="text-slate-400 text-sm font-medium leading-loose mb-10">IndiBid operates via discrete, specialized knowledge bases that ensure your RFPs are legally bulletproof and technically precise.</p>
-                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/5 rounded-2xl border border-white/10 text-blue-400 text-[10px] font-black uppercase tracking-widest"><Database size={14} /> Total Vector Chunks: 50,000+</div>
+                    <h2 className="text-xs font-black text-[#0033a0] uppercase tracking-[0.4em] mb-6">Brain Architecture</h2>
+                    <h3 className="text-4xl font-black text-[#0a1628] uppercase tracking-tight leading-tight mb-8">Sovereign <br/>Intelligence <br/>Modules</h3>
+                    <p className="text-slate-500 text-sm font-medium leading-loose mb-10">Six specialized subsystems power the RFPilot engine — from categorized FAISS vector silos to a 3-tier LLM fallback chain, every module is purpose-built for institutional procurement.</p>
+                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/70 rounded-2xl border border-blue-100 text-[#0033a0] text-[10px] font-black uppercase tracking-widest shadow-sm"><Database size={14} /> 5 Independent FAISS Silos</div>
                 </div>
-                <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-5 text-left">
                     {[
-                        { label: 'Regulatory Brain', desc: 'RBI Master Directions, Outsourcing Circulars, and Digital Payment Security Controls.', icon: ShieldCheck, color: 'text-blue-400' },
-                        { label: 'Legal Framework', desc: 'World Bank standard procurement rules and institutional contract laws.', icon: Scale, color: 'text-indigo-400' },
-                        { label: 'Technical Stack', desc: 'Microservices, ISO 27001, SOC2, and core banking integration standards.', icon: Code, color: 'text-emerald-400' },
-                        { label: 'Operational Logic', desc: 'Milestone tracking, SLA templates, and evaluation scoring matrices.', icon: GitMerge, color: 'text-amber-400' }
+                        { label: 'Multi-Silo Knowledge Base', desc: 'Documents ingested into 5 independent FAISS indexes — RFP, Legal, Compliance, Procurement, and Technical — for domain-targeted retrieval.', icon: Database, color: 'text-blue-600', border: 'border-l-blue-500' },
+                        { label: '3-Tier LLM Engine', desc: 'Primary: Mistral API with exponential backoff. Fallback 1: DistilBERT + GPT-Neo-2.7B. Fallback 2: Rule-based pattern extraction.', icon: Cpu, color: 'text-indigo-600', border: 'border-l-indigo-500' },
+                        { label: 'Intelligent Agent', desc: 'Multi-turn reasoning loop (10 iterations) chaining RAG retrieval, API calls, regex parsing, and document search autonomously.', icon: Brain, color: 'text-emerald-600', border: 'border-l-emerald-500' },
+                        { label: 'Section-by-Section Drafting', desc: 'RFP generation across 11 structured sections — each querying its own KB category silo before prompting Mistral with expert-grade instructions.', icon: FileText, color: 'text-amber-600', border: 'border-l-amber-500' },
+                        { label: 'Corrigendum Generator', desc: 'Surgical JSON editing pipeline. LLM applies natural-language changes at temperature 0.1 and outputs the complete updated document with zero data loss.', icon: GitMerge, color: 'text-purple-600', border: 'border-l-purple-500' },
+                        { label: 'Hybrid Query Resolver', desc: 'FAISS vector similarity combined with keyword overlap scoring across 8 intent types for precise, context-aware answers.', icon: Search, color: 'text-rose-600', border: 'border-l-rose-500' }
                     ].map((mod, i) => (
-                        <div key={i} className="p-8 bg-white/5 border border-white/10 rounded-[2.5rem] hover:bg-white/10 transition-all group">
-                            <mod.icon className={`${mod.color} mb-6`} size={32} />
-                            <h4 className="text-sm font-black text-white uppercase tracking-widest mb-3">{mod.label}</h4>
-                            <p className="text-xs text-slate-400 leading-relaxed font-bold">{mod.desc}</p>
+                        <div key={i} className={`p-7 bg-white/80 backdrop-blur-sm border border-slate-100 border-l-[3px] ${mod.border} rounded-2xl hover:shadow-lg hover:bg-white transition-all group`}>
+                            <div className="flex items-start gap-4">
+                                <mod.icon className={`${mod.color} shrink-0 mt-0.5`} size={22} />
+                                <div>
+                                    <h4 className="text-xs font-black uppercase tracking-widest text-[#0a1628] mb-2">{mod.label}</h4>
+                                    <p className="text-[11px] text-slate-500 leading-relaxed font-bold">{mod.desc}</p>
+                                </div>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -167,52 +174,88 @@ export default function Home() {
         </div>
 
         {/* METRICS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 py-12 border-y border-slate-100 bg-white/30 backdrop-blur-sm rounded-[3rem] px-12 mb-40">
-            {[
-                { label: 'RAG Latency', val: '< 200ms' },
-                { label: 'Compliance Index', val: '100%' },
-                { label: 'Drafting Speed', val: '12x Faster' },
-                { label: 'Audit Security', val: 'Immutable' }
-            ].map((m, i) => (
-                <div key={i} className="flex flex-col gap-2 text-center md:text-left">
-                    <span className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">{m.label}</span>
-                    <span className="text-3xl font-black text-[#0a1628] tracking-tight">{m.val}</span>
-                </div>
-            ))}
+        <div className="mb-40 py-16 px-12 bg-[#0a1628] rounded-[3rem]">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+                {[
+                    { label: 'RAG Latency', val: '< 200ms' },
+                    { label: 'Compliance Index', val: '100%' },
+                    { label: 'Drafting Speed', val: '12x Faster' },
+                    { label: 'Audit Security', val: 'Immutable' }
+                ].map((m, i) => (
+                    <div key={i} className="text-center">
+                        <span className="text-3xl font-black text-white tracking-tight block mb-2">{m.val}</span>
+                        <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.25em] block">{m.label}</span>
+                    </div>
+                ))}
+            </div>
         </div>
 
         {/* SECURITY SECTION */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 pb-40 text-left">
-            <div className="space-y-12">
-                <h2 className="text-5xl font-black uppercase tracking-tighter leading-tight text-[#0a1628]">Banking <br/><span className="text-blue-500">Security Layer</span></h2>
-                <div className="space-y-10">
-                    <div className="flex gap-6 group">
-                        <div className="w-16 h-16 bg-white border border-slate-100 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 shadow-xl group-hover:bg-blue-600 group-hover:text-white transition-all"><ShieldCheck size={28} /></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 pb-40 text-left">
+            <div className="space-y-12 flex flex-col justify-center">
+                <div>
+                    <h2 className="text-xs font-black text-blue-600 uppercase tracking-[0.4em] mb-5">Banking Security Layer</h2>
+                    <h3 className="text-5xl font-black uppercase tracking-tighter leading-tight text-[#0a1628] mb-6">Built for <br/><span className="text-blue-500">Institutional</span> <br/>Trust</h3>
+                    <p className="text-slate-500 text-base font-medium leading-relaxed max-w-md">Every access point, AI response, and document action is governed by a multi-layer security framework designed specifically for banking-grade procurement.</p>
+                </div>
+                <div className="space-y-8">
+                    <div className="flex gap-5 group">
+                        <div className="w-14 h-14 bg-white border border-slate-100 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 shadow-lg group-hover:bg-[#0033a0] group-hover:text-white group-hover:border-[#0033a0] transition-all">
+                            <ShieldCheck size={24} />
+                        </div>
                         <div>
-                            <h5 className="font-black text-sm uppercase tracking-widest mb-2">Verification Protocol</h5>
-                            <p className="text-slate-500 text-sm font-medium leading-loose max-w-sm">Mandatory CIN/GST verification and manual administrator clearance required for access.</p>
+                            <h5 className="font-black text-sm uppercase tracking-widest mb-1.5 text-[#0a1628]">Vendor Verification Gate</h5>
+                            <p className="text-slate-500 text-sm font-medium leading-relaxed max-w-sm">Vendors require CIN/GST submission and manual bank administrator clearance before accessing any live RFP data.</p>
                         </div>
                     </div>
-                    <div className="flex gap-6 group">
-                        <div className="w-16 h-16 bg-white border border-slate-100 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0 shadow-xl group-hover:bg-indigo-600 group-hover:text-white transition-all"><Lock size={28} /></div>
+                    <div className="flex gap-5 group">
+                        <div className="w-14 h-14 bg-white border border-slate-100 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0 shadow-lg group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-600 transition-all">
+                            <Lock size={24} />
+                        </div>
                         <div>
-                            <h5 className="font-black text-sm uppercase tracking-widest mb-2">Zero-Trust Intelligence</h5>
-                            <p className="text-slate-500 text-sm font-medium leading-loose max-w-sm">Multi-category RAG ensures AI responses are 100% compliant with published context.</p>
+                            <h5 className="font-black text-sm uppercase tracking-widest mb-1.5 text-[#0a1628]">Zero-Trust AI Responses</h5>
+                            <p className="text-slate-500 text-sm font-medium leading-relaxed max-w-sm">Every AI answer is grounded strictly to the published RFP vector index — no hallucinations, no external knowledge injection.</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-5 group">
+                        <div className="w-14 h-14 bg-white border border-slate-100 rounded-2xl flex items-center justify-center text-emerald-600 shrink-0 shadow-lg group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 transition-all">
+                            <BarChart3 size={24} />
+                        </div>
+                        <div>
+                            <h5 className="font-black text-sm uppercase tracking-widest mb-1.5 text-[#0a1628]">Immutable Audit Trail</h5>
+                            <p className="text-slate-500 text-sm font-medium leading-relaxed max-w-sm">Every RFP creation, corrigendum, vendor approval, and query resolution is timestamped and logged to a tamper-evident SQLite audit ledger.</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="bg-white p-12 rounded-[3.5rem] border border-slate-100 shadow-2xl relative overflow-hidden flex flex-col justify-center">
-                <div className="absolute top-0 right-0 w-60 h-60 bg-blue-50 rounded-full -mr-20 -mt-20 blur-[100px] opacity-50" />
-                <Cpu className="text-blue-600 mb-8" size={56} />
-                <h3 className="text-2xl font-black uppercase tracking-tight mb-6 text-[#0a1628]">Infrastructure</h3>
-                <p className="text-slate-500 text-lg font-medium leading-relaxed mb-10 text-left">Neural engine powered by categorized FAISS vector stores and Mistral AI.</p>
-                <div className="grid grid-cols-2 gap-6">
-                    {['RBI KB', 'Accelerated Embeds', 'RBAC Logic', 'Real-time Sync'].map((text, i) => (
-                        <div key={i} className="flex items-center gap-3 text-xs font-black uppercase tracking-widest text-[#0033a0] bg-blue-50/50 p-4 rounded-2xl border border-blue-100/50">
-                            <CheckCircle size={16} className="text-emerald-500" /> {text}
-                        </div>
-                    ))}
+
+            {/* INFRASTRUCTURE CARD */}
+            <div className="bg-[#0a1628] p-10 rounded-[3.5rem] relative overflow-hidden flex flex-col justify-between">
+                <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 rounded-full -mr-20 -mt-20 blur-[80px]" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-600/10 rounded-full -ml-10 -mb-10 blur-[60px]" />
+                <div className="relative z-10">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-blue-400 text-[10px] font-black uppercase tracking-widest mb-8">
+                        <Cpu size={12} /> Infrastructure Stack
+                    </div>
+                    <h3 className="text-3xl font-black text-white uppercase tracking-tight leading-tight mb-3">Neural Engine <br/>Architecture</h3>
+                    <p className="text-slate-400 text-sm font-medium leading-relaxed mb-10 max-w-sm">Powered by FAISS vector stores, Mistral AI, and a SQLAlchemy-backed relational database with full async I/O.</p>
+
+                    <div className="grid grid-cols-1 gap-4">
+                        {[
+                            { icon: Database, label: 'FAISS + MiniLM-L3', desc: '5 independent category indexes with SHA-256 cached embeddings', color: 'text-blue-400' },
+                            { icon: Cpu, label: 'Mistral Small (Latest)', desc: 'Primary LLM for drafting, corrigenda, and Q&A at temperature 0.0–0.3', color: 'text-indigo-400' },
+                            { icon: Lock, label: 'SQLAlchemy + SQLite', desc: 'Relational data model for RFPs, users, queries and audit logs', color: 'text-emerald-400' },
+                            { icon: Zap, label: 'FastAPI + Async I/O', desc: 'ASGI server with ThreadPoolExecutor for non-blocking inference', color: 'text-amber-400' },
+                        ].map((item, i) => (
+                            <div key={i} className="flex items-start gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all">
+                                <item.icon className={`${item.color} shrink-0 mt-0.5`} size={18} />
+                                <div>
+                                    <span className="text-[11px] font-black text-white uppercase tracking-widest block">{item.label}</span>
+                                    <span className="text-[10px] text-slate-400 font-bold leading-relaxed">{item.desc}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

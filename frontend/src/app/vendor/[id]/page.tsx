@@ -51,9 +51,9 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
   };
 
   if (!rfp) return (
-    <div className="min-h-screen bg-[#0a1628] flex flex-col items-center justify-center text-white gap-4">
-      <Loader2 size={32} className="animate-spin text-[#c8a96a]" />
-      <p className="text-slate-400 font-semibold tracking-widest text-sm uppercase italic">Securing Connection...</p>
+    <div className="min-h-screen bg-[#f4f7fb] flex flex-col items-center justify-center text-[#0a1628] gap-4">
+      <Loader2 size={32} className="animate-spin text-[#0033a0]" />
+      <p className="text-slate-400 font-bold tracking-widest text-xs uppercase">Securing Connection...</p>
     </div>
   );
 
@@ -98,7 +98,7 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
               </div>
               <button 
                 onClick={() => setSelectedCorrigendum(null)}
-                className="px-8 py-3.5 bg-[#0a1628] text-[#c8a96a] rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 active:scale-95"
+                className="px-8 py-3.5 bg-[#0033a0] text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#002277] transition-all shadow-xl shadow-blue-900/20 active:scale-95"
               >
                 Confirm Receipt
               </button>
@@ -116,7 +116,7 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
           <div className="w-px h-8 bg-slate-200" />
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-                <Building2 size={16} className="text-[#c8a96a]" />
+                <Building2 size={16} className="text-[#0033a0]" />
                 <h1 className="text-lg font-black text-[#0a1628] tracking-tight line-clamp-1">{rfp.title}</h1>
             </div>
             <div className="flex items-center gap-3 mt-0.5">
@@ -136,9 +136,9 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
             <a
                 href={`${BACKEND_URL}${rfp.pdf_url}`}
                 download
-                className="flex items-center gap-2.5 px-6 py-3 bg-[#0a1628] hover:bg-indigo-700 text-white rounded-2xl text-xs font-black uppercase tracking-[0.15em] transition-all shadow-xl shadow-slate-200 active:scale-95 group"
+                className="flex items-center gap-2.5 px-6 py-3 bg-[#0033a0] hover:bg-[#002277] text-white rounded-2xl text-xs font-black uppercase tracking-[0.15em] transition-all shadow-lg shadow-blue-900/20 active:scale-95 group"
             >
-                <Download size={14} className="group-hover:translate-y-0.5 transition-transform text-[#c8a96a]" /> Export Document
+                <Download size={14} className="group-hover:translate-y-0.5 transition-transform text-white/80" /> Export Document
             </a>
         </div>
       </header>
@@ -147,39 +147,46 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
       <div className="flex-1 flex overflow-hidden">
         
         {/* Sidebar Navigation */}
-        <aside className="w-24 bg-white border-r border-slate-200 flex flex-col items-center py-8 gap-8 shrink-0 z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)]">
-            <button 
-                onClick={() => setActiveTab('document')}
-                className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all group ${activeTab === 'document' ? 'bg-[#0a1628] text-[#c8a96a] shadow-xl shadow-indigo-100' : 'text-slate-400 hover:bg-slate-50'}`}
-            >
-                <FileText size={20} />
-                <span className="text-[8px] font-black uppercase tracking-tighter">Specs</span>
-            </button>
+        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col py-8 px-5 shrink-0 z-10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.02)]">
+            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 px-3">Tender Navigation</div>
+            <div className="flex flex-col gap-2">
+                <button 
+                    onClick={() => setActiveTab('document')}
+                    className={`h-12 w-full rounded-2xl flex items-center px-4 gap-3 transition-all group ${activeTab === 'document' ? 'bg-[#0033a0] text-white shadow-md shadow-blue-900/10' : 'text-slate-500 hover:bg-slate-50 hover:text-[#0033a0]'}`}
+                >
+                    <FileText size={18} className={activeTab === 'document' ? 'text-white' : 'text-slate-400 group-hover:text-[#0033a0]'} />
+                    <span className="text-xs font-black uppercase tracking-widest">Document Specs</span>
+                </button>
 
-            <button 
-                onClick={() => setActiveTab('corrigenda')}
-                className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all group relative ${activeTab === 'corrigenda' ? 'bg-[#0a1628] text-[#c8a96a] shadow-xl shadow-indigo-100' : 'text-slate-400 hover:bg-slate-50'}`}
-            >
-                <History size={20} />
-                <span className="text-[8px] font-black uppercase tracking-tighter">History</span>
-                {corrigenda.length > 0 && (
-                    <span className="absolute top-2 right-2 w-4 h-4 bg-amber-500 text-white text-[8px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-sm animate-bounce">
-                        {corrigenda.length}
-                    </span>
-                )}
-            </button>
+                <button 
+                    onClick={() => setActiveTab('corrigenda')}
+                    className={`h-12 w-full rounded-2xl flex items-center px-4 gap-3 transition-all group relative ${activeTab === 'corrigenda' ? 'bg-[#0033a0] text-white shadow-md shadow-blue-900/10' : 'text-slate-500 hover:bg-slate-50 hover:text-[#0033a0]'}`}
+                >
+                    <History size={18} className={activeTab === 'corrigenda' ? 'text-white' : 'text-slate-400 group-hover:text-[#0033a0]'} />
+                    <span className="text-xs font-black uppercase tracking-widest">Amendments</span>
+                    {corrigenda.length > 0 && (
+                        <span className={`ml-auto w-5 h-5 flex items-center justify-center text-[9px] font-black rounded-full shadow-sm ${activeTab === 'corrigenda' ? 'bg-white text-[#0033a0]' : 'bg-amber-500 text-white animate-pulse'}`}>
+                            {corrigenda.length}
+                        </span>
+                    )}
+                </button>
 
-            <button 
-                onClick={() => setActiveTab('queries')}
-                className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all group ${activeTab === 'queries' ? 'bg-[#0a1628] text-[#c8a96a] shadow-xl shadow-indigo-100' : 'text-slate-400 hover:bg-slate-50'}`}
-            >
-                <HelpCircle size={20} />
-                <span className="text-[8px] font-black uppercase tracking-tighter">Support</span>
-            </button>
+                <button 
+                    onClick={() => setActiveTab('queries')}
+                    className={`h-12 w-full rounded-2xl flex items-center px-4 gap-3 transition-all group ${activeTab === 'queries' ? 'bg-[#0033a0] text-white shadow-md shadow-blue-900/10' : 'text-slate-500 hover:bg-slate-50 hover:text-[#0033a0]'}`}
+                >
+                    <HelpCircle size={18} className={activeTab === 'queries' ? 'text-white' : 'text-slate-400 group-hover:text-[#0033a0]'} />
+                    <span className="text-xs font-black uppercase tracking-widest">Support Q&A</span>
+                </button>
+            </div>
 
-            <div className="mt-auto flex flex-col items-center gap-6">
-                <div className="w-10 h-10 rounded-full border-2 border-slate-100 flex items-center justify-center text-slate-300">
-                    <ShieldCheck size={18} />
+            <div className="mt-auto bg-slate-50/50 border border-slate-100 rounded-2xl p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-emerald-500 shadow-sm shrink-0">
+                    <ShieldCheck size={20} />
+                </div>
+                <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Connection</span>
+                    <span className="text-[9px] font-bold text-emerald-600 uppercase">Secured Node</span>
                 </div>
             </div>
         </aside>
@@ -235,10 +242,10 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
                                                 {/* Content Card */}
                                                 <div 
                                                     onClick={() => setSelectedCorrigendum(c)}
-                                                    className={`group bg-white rounded-[2rem] border transition-all cursor-pointer relative flex flex-col md:flex-row overflow-hidden active:scale-[0.99] ${isLatest ? 'border-[#004a99] shadow-xl shadow-blue-900/5 ring-1 ring-[#004a99]/10' : 'border-slate-200 shadow-sm hover:border-slate-400 hover:shadow-md'}`}
+                                                    className={`group bg-white rounded-[2rem] border transition-all cursor-pointer relative flex flex-col md:flex-row overflow-hidden active:scale-[0.99] ${isLatest ? 'border-[#0033a0] shadow-xl shadow-blue-900/5 ring-1 ring-[#0033a0]/10' : 'border-slate-200 shadow-sm hover:border-slate-400 hover:shadow-md'}`}
                                                 >
                                                     {/* Side Highlight */}
-                                                    <div className={`w-2 shrink-0 ${isLatest ? 'bg-[#004a99]' : 'bg-slate-100 group-hover:bg-slate-300'}`} />
+                                                    <div className={`w-2 shrink-0 ${isLatest ? 'bg-[#0033a0]' : 'bg-slate-100 group-hover:bg-slate-300'}`} />
                                                     
                                                     <div className="p-8 flex-1">
                                                         <div className="flex items-center justify-between mb-4">
@@ -253,7 +260,7 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
                                                             </span>
                                                         </div>
                                                         
-                                                        <h3 className={`text-lg font-black tracking-tight mb-3 ${isLatest ? 'text-[#004a99]' : 'text-slate-900'}`}>
+                                                        <h3 className={`text-lg font-black tracking-tight mb-3 ${isLatest ? 'text-[#0033a0]' : 'text-slate-900'}`}>
                                                             {c.change_summary}
                                                         </h3>
                                                         
@@ -314,7 +321,7 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
                             <div className="flex-1 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col overflow-hidden">
                                 <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-[#0a1628] rounded-xl flex items-center justify-center text-[#c8a96a] shadow-lg shadow-indigo-100">
+                                        <div className="w-10 h-10 bg-[#0033a0] rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-900/10">
                                             <MessageSquare size={18} />
                                         </div>
                                         <div>
@@ -342,7 +349,7 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
                                     {queries.filter(q => q.question.toLowerCase().includes(searchTerm.toLowerCase())).map((q: any) => (
                                         <div key={q.id} className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
                                             <div className="flex justify-end">
-                                                <div className="max-w-[80%] bg-[#0a1628] text-white px-6 py-4 rounded-[1.75rem] rounded-tr-md text-sm font-medium shadow-xl shadow-slate-200/50 leading-relaxed border border-white/10">
+                                                <div className="max-w-[80%] bg-[#0033a0] text-white px-6 py-4 rounded-[1.75rem] rounded-tr-md text-sm font-medium shadow-md shadow-blue-900/10 leading-relaxed border border-white/10">
                                                     {q.question}
                                                 </div>
                                             </div>
@@ -372,19 +379,19 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
 
                                 <div className="p-8 bg-white border-t border-slate-100">
                                     <form onSubmit={handleAskQuery} className="relative group">
-                                        <div className="absolute inset-0 bg-indigo-600 rounded-3xl blur-xl opacity-0 group-focus-within:opacity-10 transition-opacity" />
-                                        <div className="relative flex items-center">
+                                        <div className="absolute inset-0 bg-[#0033a0] rounded-3xl blur-xl opacity-0 group-focus-within:opacity-5 transition-opacity pointer-events-none" />
+                                        <div className="relative flex items-center w-full">
                                             <input
                                                 placeholder="Inquire about technical specifications, compliance standards..."
-                                                className="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] py-5 pl-8 pr-20 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:bg-white focus:border-indigo-500 transition-all shadow-inner"
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-6 pr-16 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-[#0033a0]/10 focus:bg-white focus:border-[#0033a0] transition-all shadow-inner"
                                                 value={newQuery}
                                                 onChange={e => setNewQuery(e.target.value)}
                                             />
                                             <button
                                                 disabled={asking || !newQuery.trim()}
-                                                className="absolute right-3 w-14 h-14 bg-[#0a1628] text-[#c8a96a] rounded-2xl flex items-center justify-center hover:bg-slate-800 transition-all shadow-xl shadow-slate-300/50 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 active:shadow-inner"
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#0033a0] text-white rounded-xl flex items-center justify-center hover:bg-[#002277] transition-all shadow-md shadow-blue-900/10 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
                                             >
-                                                {asking ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+                                                {asking ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} className="-ml-0.5" />}
                                             </button>
                                         </div>
                                     </form>
@@ -398,16 +405,7 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
 
                             {/* Info Panel */}
                             <div className="hidden xl:flex w-80 flex-col gap-6 shrink-0 overflow-y-auto custom-scrollbar">
-                                <div className="bg-gradient-to-br from-[#0a1628] to-[#122654] rounded-[2rem] p-8 text-white shadow-xl shadow-indigo-100 border border-white/5 relative overflow-hidden">
-                                    <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-3xl" />
-                                    <Bell size={20} className="text-[#c8a96a] mb-6" />
-                                    <h4 className="text-lg font-black tracking-tight mb-2 uppercase">Pro Tip</h4>
-                                    <p className="text-sm font-medium text-slate-300 leading-relaxed mb-6">Our RAG engine scans the technical specs of this RFP specifically to answer your queries.</p>
-                                    <div className="bg-white/10 p-4 rounded-2xl border border-white/10 text-[10px] font-black uppercase tracking-widest text-[#c8a96a] flex items-center gap-2">
-                                        <Sparkles size={14} /> Higher Accuracy Protocol
-                                    </div>
-                                </div>
-
+                                
                                 <div className="bg-white rounded-[2rem] p-8 border border-slate-200 shadow-sm">
                                     <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-6 border-b border-slate-50 pb-4">Submission Status</h4>
                                     <div className="space-y-6">
