@@ -70,6 +70,10 @@ MANDATORY FORMATTING INSTRUCTIONS:
 
         if self.decision_engine.use_mistral:
             try:
+                # Add delay to avoid Mistral Free Tier Rate Limits (1 RPS limit)
+                logging.info("Sleeping for 2.5 seconds to respect Mistral free-tier rate limits...")
+                await asyncio.sleep(2.5)
+                
                 messages = [
                     {"role": "system", "content": "You are a senior banking procurement officer expert in contract modifications."},
                     {"role": "user", "content": prompt}

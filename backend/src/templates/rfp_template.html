@@ -24,25 +24,26 @@
         /* --- Cover Page --- */
         .cover-page {
             text-align: center;
-            padding-top: 5cm;
             page-break-after: always;
         }
         .bank-logo {
-            font-size: 26pt;
+            font-size: 28pt;
             font-weight: bold;
             color: #1a437f;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             border-bottom: 2pt solid #1a437f;
             display: inline-block;
             padding-bottom: 10pt;
-            margin-bottom: 2cm;
+            margin-top: 0cm;
         }
         .rfp-title {
-            font-size: 22pt;
+            font-size: 24pt;
             font-weight: bold;
             color: #1a1a1a;
-            margin-bottom: 3cm;
+            margin-top: 6cm;
+            margin-bottom: 2cm;
             text-transform: uppercase;
+            line-height: 1.4;
         }
         .rfp-meta {
             font-size: 11pt;
@@ -53,6 +54,7 @@
             display: inline-block;
             text-align: left;
             min-width: 8cm;
+            margin-top: 2cm;
         }
         /* --- Table of Contents --- */
         .toc-page {
@@ -206,9 +208,9 @@
     <!-- COVER PAGE -->
     <div class="cover-page">
         <div class="bank-logo">{{ organization | upper }}</div>
-        <div style="height: 1cm;"></div>
+        
         <div class="rfp-title">Request for Proposal (RFP)<br/>for<br/>{{ title }}</div>
-        <div style="height: 2cm;"></div>
+        
         <div class="rfp-meta">
             <strong style="color: #1a437f;">RFP IDENTIFICATION:</strong> {{ rfp_id }}<br/>
             <strong style="color: #1a437f;">DATE OF ISSUANCE:</strong> {{ issue_date }}<br/>

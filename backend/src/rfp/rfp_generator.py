@@ -150,7 +150,7 @@ Generate Section {section['num']} JSON now:
                         {"role": "user", "content": prompt}
                     ],
                     temperature=0.15,
-                    max_tokens=2000,
+                    max_tokens=4000,
                     response_format={"type": "json_object"}
                 )
             )
