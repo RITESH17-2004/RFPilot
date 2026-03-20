@@ -2,7 +2,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Building2, Store, Eye, EyeOff, ArrowRight, Lock, Mail, User, Briefcase, Sparkles, Globe, FileCheck, ShieldCheck, Phone, Loader2 } from 'lucide-react';
+import { Building2, Store, Eye, EyeOff, ArrowRight, Lock, Mail, User, Briefcase, Sparkles, Globe, FileCheck, ShieldCheck, Phone, Loader2, ChevronDown} from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 function SignupForm() {
@@ -30,7 +30,7 @@ function SignupForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
-        
+
         if (!email || !password || !fullName) { setError('Basic info is required.'); return; }
         if (role === 'vendor' && (!organization || !registrationId)) { setError('Business details are required for vendors.'); return; }
         if (password !== confirmPassword) { setError('Passwords do not match.'); return; }
@@ -92,9 +92,9 @@ function SignupForm() {
     const isBank = role === 'bank';
 
     return (
-        <div className="min-h-screen flex bg-[#0a1628]">
-            {/* Left branded panel */}
-            <div className="hidden lg:flex w-5/12 flex-col justify-between p-12 relative overflow-hidden">
+        <div className="h-screen flex bg-[#0a1628] overflow-hidden">
+            {/* Left branded panel: Fixed Height */}
+            <div className="hidden lg:flex w-5/12 flex-col justify-between p-12 relative overflow-hidden h-full">
                 <div className="absolute inset-0">
                     <div className={`absolute -top-20 -left-20 w-96 h-96 rounded-full blur-3xl opacity-30 animate-pulse ${isBank ? 'bg-[#c8a96a]' : 'bg-indigo-500'}`} />
                     <div className={`absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl opacity-20 animate-pulse delay-1000 ${isBank ? 'bg-amber-300' : 'bg-blue-400'}`} />
@@ -124,8 +124,8 @@ function SignupForm() {
                 </div>
             </div>
 
-            {/* Right: form */}
-            <div className="flex-1 flex flex-col justify-center items-center p-8 bg-[#f8fafc] overflow-y-auto">
+            {/* Right: form - Independently Scrollable */}
+            <div className="flex-1 flex flex-col items-center p-8 bg-[#f8fafc] overflow-y-auto h-full">
                 <div className="w-full max-w-xl py-12">
                     {/* Role tabs */}
                     <div className="flex rounded-2xl bg-slate-100 p-1 mb-10 gap-1 border border-slate-200">
@@ -143,7 +143,7 @@ function SignupForm() {
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-8 bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-200">
-                        
+
                         {/* Section 1: Basic Identity */}
                         <div className="space-y-5">
                             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-50 pb-3">
@@ -208,13 +208,21 @@ function SignupForm() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Vendor Category</label>
-                                        <select value={vendorCategory} onChange={e => setVendorCategory(e.target.value)} className="w-full px-4 py-4 bg-slate-50 border-2 border-transparent focus:border-indigo-600 rounded-2xl text-sm font-bold outline-none cursor-pointer">
-                                            <option value="">Select Domain...</option>
-                                            <option value="software">Software & AI</option>
-                                            <option value="security">Cybersecurity</option>
-                                            <option value="infrastructure">IT Infrastructure</option>
-                                            <option value="consulting">Consulting & Advisory</option>
-                                        </select>
+                                        <div className="relative group">
+                                            <Briefcase size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors pointer-events-none" />
+                                            <select 
+                                                value={vendorCategory} 
+                                                onChange={e => setVendorCategory(e.target.value)} 
+                                                className="w-full pl-11 pr-10 py-4 bg-slate-50 border-2 border-transparent focus:border-indigo-600 rounded-2xl text-sm font-bold transition-all outline-none appearance-none cursor-pointer"
+                                            >
+                                                <option value="">Select Domain...</option>
+                                                <option value="software">Software & AI</option>
+                                                <option value="security">Cybersecurity</option>
+                                                <option value="infrastructure">IT Infrastructure</option>
+                                                <option value="consulting">Consulting & Advisory</option>
+                                            </select>
+                                            <ChevronDown size={17} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none group-focus-within:text-indigo-600 transition-colors" />
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Years in Business</label>

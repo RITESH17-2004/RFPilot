@@ -8,14 +8,14 @@ export default function CreateRFP() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    title: "Next-Gen Mobile Banking Platform 2026",
-    project_type: "Mobile Application",
-    budget: "INR 10 Crores - 15 Crores",
-    timeline: "8 Months",
-    requirements: "The bank requires a high-performance mobile application supporting 10M+ users with biometric security and real-time fraud detection.",
-    issuance_date: new Date().toISOString().split('T')[0],
-    submission_deadline: "2026-06-30",
-    evaluation_strategy: "QCBS 70:30",
+    title: "",
+    project_type: "",
+    budget: "",
+    timeline: "",
+    requirements: "",
+    issuance_date: "",
+    submission_deadline: "",
+    evaluation_strategy: "",
     bank_profile: {
       bank_name: "Bajaj FinTech Bank",
       department: "Digital Infrastructure",
@@ -24,10 +24,10 @@ export default function CreateRFP() {
       location: "Pune, India"
     },
     // Expert Mode Fields
-    eligibility_criteria: "Minimum 5 years in banking tech; $10M annual revenue; ISO 27001 Certified.",
-    compliance_standards: "PCI-DSS, ISO 27001, RBI Master Direction on Outsourcing of IT Services 2024.",
-    technical_stack: "Microservices Architecture, React Native, PostgreSQL, AWS Cloud-Native.",
-    sla_requirements: "99.95% Availability; 1-hour response for P1 issues; 24/7 technical support."
+    eligibility_criteria: "",
+    compliance_standards: "",
+    technical_stack: "",
+    sla_requirements: ""
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -105,7 +105,7 @@ export default function CreateRFP() {
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Project Title</label>
                     <div className="relative group">
                       <Briefcase className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" size={20} />
-                      <input type="text" className="w-full pl-14 pr-6 py-5 bg-slate-50 focus:bg-white border-2 border-transparent focus:border-indigo-600 rounded-3xl outline-none font-bold text-slate-900 transition-all shadow-sm" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required />
+                      <input type="text" className="w-full pl-14 pr-6 py-5 bg-slate-50 focus:bg-white border-2 border-transparent focus:border-indigo-600 rounded-3xl outline-none font-bold text-slate-900 transition-all shadow-sm" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Next-Gen Mobile Banking Platform 2026" required />
                     </div>
                   </div>
 
@@ -114,7 +114,7 @@ export default function CreateRFP() {
                       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Project Category</label>
                       <div className="relative">
                         <Cpu className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
-                        <input type="text" className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-3xl outline-none font-bold text-sm shadow-sm" value={formData.project_type} onChange={e => setFormData({...formData, project_type: e.target.value})} placeholder="e.g. Cloud, Security" required />
+                        <input type="text" className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-3xl outline-none font-bold text-sm shadow-sm" value={formData.project_type} onChange={e => setFormData({...formData, project_type: e.target.value})} placeholder="e.g. Mobile Application, Cloud, Security" required />
                       </div>
                     </div>
                     <div className="space-y-4">
@@ -126,19 +126,19 @@ export default function CreateRFP() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Issuance Date</label>
                       <div className="relative">
                         <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
-                        <input type="date" className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-3xl outline-none font-bold text-sm shadow-sm" value={formData.issuance_date} onChange={e => setFormData({...formData, issuance_date: e.target.value})} required />
+                        <input type="date" className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-3xl outline-none font-bold text-sm shadow-sm" value={formData.issuance_date} onChange={e => setFormData({...formData, issuance_date: e.target.value})} placeholder="Select Date" required />
                       </div>
                     </div>
                     <div className="space-y-4">
                       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Submission Deadline</label>
                       <div className="relative">
                         <Clock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
-                        <input type="date" className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-3xl outline-none font-bold text-sm shadow-sm" value={formData.submission_deadline} onChange={e => setFormData({...formData, submission_deadline: e.target.value})} required />
+                        <input type="date" className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-3xl outline-none font-bold text-sm shadow-sm" value={formData.submission_deadline} onChange={e => setFormData({...formData, submission_deadline: e.target.value})} placeholder="Select Deadline" required />
                       </div>
                     </div>
                   </div>
@@ -148,14 +148,14 @@ export default function CreateRFP() {
                       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Estimated Budget (INR/USD)</label>
                       <div className="relative">
                         <IndianRupee className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
-                        <input type="text" className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-3xl outline-none font-bold text-sm shadow-sm" value={formData.budget} onChange={e => setFormData({...formData, budget: e.target.value})} required />
+                        <input type="text" className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-3xl outline-none font-bold text-sm shadow-sm" value={formData.budget} onChange={e => setFormData({...formData, budget: e.target.value})} placeholder="e.g. INR 10 Crores - 15 Crores" required />
                       </div>
                     </div>
                     <div className="space-y-4">
                       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Implementation Timeline</label>
                       <div className="relative">
                         <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
-                        <input type="text" className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-3xl outline-none font-bold text-sm shadow-sm" value={formData.timeline} onChange={e => setFormData({...formData, timeline: e.target.value})} required />
+                        <input type="text" className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-3xl outline-none font-bold text-sm shadow-sm" value={formData.timeline} onChange={e => setFormData({...formData, timeline: e.target.value})} placeholder="e.g. 8 Months" required />
                       </div>
                     </div>
                   </div>
@@ -176,22 +176,22 @@ export default function CreateRFP() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Eligibility Criteria</label>
-                        <textarea rows={3} className="w-full p-6 bg-white border-2 border-slate-100 focus:border-indigo-600 rounded-3xl outline-none font-medium text-xs leading-relaxed shadow-sm transition-all" value={formData.eligibility_criteria} onChange={e => setFormData({...formData, eligibility_criteria: e.target.value})} placeholder="Specify vendor qualifications..." />
+                        <textarea rows={3} className="w-full p-6 bg-white border-2 border-slate-100 focus:border-indigo-600 rounded-3xl outline-none font-medium text-xs leading-relaxed shadow-sm transition-all" value={formData.eligibility_criteria} onChange={e => setFormData({...formData, eligibility_criteria: e.target.value})} placeholder="e.g. Minimum 5 years in banking tech; ISO 27001 Certified." />
                     </div>
                     <div className="space-y-4">
                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Compliance Standards</label>
-                        <textarea rows={3} className="w-full p-6 bg-white border-2 border-slate-100 focus:border-indigo-600 rounded-3xl outline-none font-medium text-xs leading-relaxed shadow-sm transition-all" value={formData.compliance_standards} onChange={e => setFormData({...formData, compliance_standards: e.target.value})} placeholder="ISO 27001, PCI-DSS, RBI Guidelines..." />
+                        <textarea rows={3} className="w-full p-6 bg-white border-2 border-slate-100 focus:border-indigo-600 rounded-3xl outline-none font-medium text-xs leading-relaxed shadow-sm transition-all" value={formData.compliance_standards} onChange={e => setFormData({...formData, compliance_standards: e.target.value})} placeholder="e.g. PCI-DSS, ISO 27001, RBI Guidelines 2024." />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Technical Stack Preference</label>
-                        <textarea rows={3} className="w-full p-6 bg-white border-2 border-slate-100 focus:border-indigo-600 rounded-3xl outline-none font-medium text-xs leading-relaxed shadow-sm transition-all" value={formData.technical_stack} onChange={e => setFormData({...formData, technical_stack: e.target.value})} placeholder="Microservices, Cloud, API protocols..." />
+                        <textarea rows={3} className="w-full p-6 bg-white border-2 border-slate-100 focus:border-indigo-600 rounded-3xl outline-none font-medium text-xs leading-relaxed shadow-sm transition-all" value={formData.technical_stack} onChange={e => setFormData({...formData, technical_stack: e.target.value})} placeholder="e.g. Microservices, React Native, PostgreSQL, AWS." />
                     </div>
                     <div className="space-y-4">
                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">SLA Requirements</label>
-                        <textarea rows={3} className="w-full p-6 bg-white border-2 border-slate-100 focus:border-indigo-600 rounded-3xl outline-none font-medium text-xs leading-relaxed shadow-sm transition-all" value={formData.sla_requirements} onChange={e => setFormData({...formData, sla_requirements: e.target.value})} placeholder="Availability, Resolution times..." />
+                        <textarea rows={3} className="w-full p-6 bg-white border-2 border-slate-100 focus:border-indigo-600 rounded-3xl outline-none font-medium text-xs leading-relaxed shadow-sm transition-all" value={formData.sla_requirements} onChange={e => setFormData({...formData, sla_requirements: e.target.value})} placeholder="e.g. 99.95% Availability; 1-hour response for P1." />
                     </div>
                   </div>
                 </div>

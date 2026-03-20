@@ -65,9 +65,9 @@ function LoginForm() {
     const isBank = role === 'bank';
 
     return (
-        <div className="min-h-screen flex bg-[#0a1628]">
-            {/* Left branded panel */}
-            <div className="hidden lg:flex w-5/12 flex-col justify-between p-12 relative overflow-hidden">
+        <div className="h-screen flex bg-[#0a1628] overflow-hidden">
+            {/* Left branded panel: Fixed Height */}
+            <div className="hidden lg:flex w-5/12 flex-col justify-between p-12 relative overflow-hidden h-full">
                 <div className="absolute inset-0">
                     <div className={`absolute -top-20 -left-20 w-96 h-96 rounded-full blur-3xl opacity-30 animate-pulse ${isBank ? 'bg-[#c8a96a]' : 'bg-indigo-500'}`} />
                     <div className={`absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl opacity-20 animate-pulse delay-1000 ${isBank ? 'bg-amber-300' : 'bg-blue-400'}`} />
@@ -95,9 +95,9 @@ function LoginForm() {
                 </div>
             </div>
 
-            {/* Right: form */}
-            <div className="flex-1 flex flex-col justify-center items-center p-8 bg-[#f8fafc] overflow-y-auto">
-                <div className="w-full max-w-md">
+            {/* Right: form - Independently Scrollable */}
+            <div className="flex-1 flex flex-col items-center p-8 bg-[#f8fafc] overflow-y-auto h-full">
+                <div className="w-full max-w-md my-auto py-12">
                     <div className="flex rounded-2xl bg-slate-100 p-1 mb-10 gap-1 border border-slate-200">
                         <button onClick={() => setRole('bank')} className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-200 ${role === 'bank' ? 'bg-[#0a1628] text-white shadow-lg' : 'text-slate-500 hover:text-slate-700'}`}>
                             <Building2 size={14} /> Bank Admin

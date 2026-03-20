@@ -152,10 +152,10 @@ export default function Home() {
                 </div>
                 <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-5 text-left">
                     {[
-                        { label: 'Multi-Silo Knowledge Base', desc: 'Documents ingested into 5 independent FAISS indexes — RFP, Legal, Compliance, Procurement, and Technical — for domain-targeted retrieval.', icon: Database, color: 'text-blue-600', border: 'border-l-blue-500' },
+                        { label: 'Multi-Silo Knowledge Base', desc: 'Documents ingested into 5 independent FAISS indexes: RFP, Legal, Compliance, Procurement, and Technical for domain-targeted retrieval.', icon: Database, color: 'text-blue-600', border: 'border-l-blue-500' },
                         { label: '3-Tier LLM Engine', desc: 'Primary: Mistral API with exponential backoff. Fallback 1: DistilBERT + GPT-Neo-2.7B. Fallback 2: Rule-based pattern extraction.', icon: Cpu, color: 'text-indigo-600', border: 'border-l-indigo-500' },
                         { label: 'Intelligent Agent', desc: 'Multi-turn reasoning loop (10 iterations) chaining RAG retrieval, API calls, regex parsing, and document search autonomously.', icon: Brain, color: 'text-emerald-600', border: 'border-l-emerald-500' },
-                        { label: 'Section-by-Section Drafting', desc: 'RFP generation across 11 structured sections — each querying its own KB category silo before prompting Mistral with expert-grade instructions.', icon: FileText, color: 'text-amber-600', border: 'border-l-amber-500' },
+                        { label: 'Section-by-Section Drafting', desc: 'RFP generation across 11 structured sections, each querying its own KB category silo before prompting Mistral with expert-grade instructions.', icon: FileText, color: 'text-amber-600', border: 'border-l-amber-500' },
                         { label: 'Corrigendum Generator', desc: 'Surgical JSON editing pipeline. LLM applies natural-language changes at temperature 0.1 and outputs the complete updated document with zero data loss.', icon: GitMerge, color: 'text-purple-600', border: 'border-l-purple-500' },
                         { label: 'Hybrid Query Resolver', desc: 'FAISS vector similarity combined with keyword overlap scoring across 8 intent types for precise, context-aware answers.', icon: Search, color: 'text-rose-600', border: 'border-l-rose-500' }
                     ].map((mod, i) => (
