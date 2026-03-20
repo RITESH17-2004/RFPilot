@@ -42,16 +42,14 @@ To deliver this level of precision, our platform treats every RFP as a **"Struct
 *   **Precise Document Mutation:** Performs surgical updates without breaking the original document structure.
 *   **Rigorous Human-in-the-Loop (HITL):** Ensures bank oversight and 100% regulatory compliance.
 
-*(See the [Key Features](#features) section below for an in-depth breakdown of these technical implementations).*
-
 ---
 
 ## <a id="overview"></a>📄 2. Project Overview
 **RFPilot** is a specialized, end-to-end GenAI platform designed to autonomously manage the high-stakes lifecycle of banking Request for Proposals (RFPs). 
 
-In institutional banking, drafting an RFP is not merely about writing a document; it is about synthesizing complex legal frameworks, strict regulatory mandates (such as the RBI Master Directions), and dense technical specifications into a single, cohesive contract. Traditionally, this process requires cross-departmental coordination (Legal, Procurement, IT) and takes anywhere from 30 to 45 days.
+In institutional banking, drafting an RFP is not merely about writing a document, it is about synthesizing complex legal frameworks, strict regulatory mandates (such as the RBI Master Directions), and dense technical specifications into a single, cohesive contract. Traditionally, this process requires cross-departmental coordination (Legal, Procurement, IT) and takes anywhere from 30 to 45 days.
 
-**RFPilot fundamentally disrupts this workflow.** Built specifically for institutional rigor, it moves beyond the capabilities of generic LLM chatbots to provide a **deterministic, regulatory-dense document engine**. It allows banks to:
+**RFPilot fundamentally disrupts this workflow.** It moves beyond the capabilities of generic LLM chatbots to provide a **deterministic, regulatory-dense document engine**. It allows banks to:
 1. **Autonomously Draft** comprehensive, 100+ page RFPs in minutes based on simple project parameters.
 2. **Resolve Vendor Queries** instantly using a secure, multi-turn RAG (Retrieval-Augmented Generation) agent that grounds its answers solely in the bank's verified knowledge base.
 3. **Issue Surgical Corrigenda** (amendments) without manually rewriting or breaking the original document structure.
@@ -82,7 +80,7 @@ By treating the RFP as a "Structured Intelligence Object" rather than plain text
 *   **Auto-Vector Sync**: Instantly clears and re-indexes the Vector Store upon document modification so the Query Engine is always using the absolute latest version.
 
 ### 5️⃣ Institutional Audit & Security
-*   **Immutable Ledger**: Cryptographically logs every action—from initial draft generation to query approvals and corrigendum issuances.
+*   **Immutable Ledger**: Cryptographically logs every action from initial draft generation to query approvals and corrigendum issuances.
 *   **Role-Based Access Control (RBAC)**: Distinct, isolated frontend portals for Bank Admins vs. Vendors.
 
 ---
@@ -90,7 +88,7 @@ By treating the RFP as a "Structured Intelligence Object" rather than plain text
 ## <a id="architecture"></a>🏗️ 4. System Architecture
 
 <p align="center">
-  <img src="./assests/diagrams/system-architecture-rfpilot.png" width="850px" alt="System Architecture Diagram" />
+  <img src="./assets/diagrams/system-architecture-rfpilot.png" width="850px" alt="System Architecture Diagram" />
 </p>
 
 ---
@@ -100,13 +98,13 @@ By treating the RFP as a "Structured Intelligence Object" rather than plain text
 <table width="100%" style="border-collapse: collapse;">
   <tr>
     <td width="33%" align="center" valign="bottom"><b>1. RFP Generation Flow</b></td>
-    <td width="33%" align="center" valign="bottom"><b>3. Corrigendum Flow</b></td>
-    <td width="33%" align="center" valign="bottom"><b>2. Vendor Query Flow</b></td>
+    <td width="33%" align="center" valign="bottom"><b>2. Corrigendum Flow</b></td>
+    <td width="33%" align="center" valign="bottom"><b>3. Vendor Query Flow</b></td>
   </tr>
   <tr>
-    <td align="center" valign="middle"><br><img src="./assests/diagrams/rfp-gen-flow.png" width="100%" alt="RFP Generation Flowchart" /></td>
-    <td align="center" valign="middle"><br><img src="./assests/diagrams/corrigendum-flow.png" width="100%" alt="Corrigendum Flowchart" /></td>
-    <td align="center" valign="middle"><br><img src="./assests/diagrams/vendor-query-flow.png" width="100%" alt="Vendor Query Flowchart" /></td>
+    <td align="center" valign="middle"><br><img src="./assets/diagrams/rfp-gen-flow.png" width="100%" alt="RFP Generation Flowchart" /></td>
+    <td align="center" valign="middle"><br><img src="./assets/diagrams/corrigendum-flow.png" width="100%" alt="Corrigendum Flowchart" /></td>
+    <td align="center" valign="middle"><br><img src="./assets/diagrams/vendor-query-flow.png" width="100%" alt="Vendor Query Flowchart" /></td>
   </tr>
 </table>
 
@@ -176,7 +174,7 @@ sequenceDiagram
 | :--- | :--- |
 | **Frontend** | Next.js 16, React 19, Tailwind CSS v4, Lucide React |
 | **Backend** | FastAPI (Python 3.11+), Uvicorn |
-| **Intelligence** | Mistral AI, Sentence-Transformers, PyTorch |
+| **Intelligence** | Mistral AI, paraphrase-MiniLM-L3-v2, PyTorch |
 | **Data Processing** | PyMuPDF, PyTesseract, Langchain Text Splitters |
 | **Vector Store** | FAISS (Facebook AI Similarity Search) |
 | **Database & Auth** | Supabase, SQLAlchemy, SQLite (PostgreSQL Ready via pg8000) |
@@ -188,14 +186,22 @@ sequenceDiagram
 
 ### **1. Environment Setup**
 ```bash
-git clone https://github.com/your-repo/RFPilot.git
+git clone https://github.com/RITESH17-2004/RFPilot
 cd RFPilot/backend
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### **2. Knowledge Base Ingestion (Mandatory)**
+### **2. Environment Variables (.env)**
+RFPilot requires API keys for its AI Engine and Database Authentication. Create a `.env` file in the `backend/` directory (and mirror the Supabase keys in your `frontend/` `.env.local` if using client-side auth):
+```env
+MISTRAL_API_KEY="your_mistral_api_key_here"
+SUPABASE_URL="your_supabase_project_url"
+SUPABASE_KEY="your_supabase_anon_key"
+```
+
+### **3. Knowledge Base Ingestion (Mandatory)**
 RFPilot requires its cognitive silos to be initialized before the first run.
 ```bash
 # A. Parse Golden Source PDFs (RBI/World Bank)
@@ -205,7 +211,7 @@ python ingest_golden_source.py
 python ingest_kb.py
 ```
 
-### **3. Launch**
+### **4. Launch**
 ```bash
 # Start Backend (Port 8000)
 python start_server.py
@@ -327,5 +333,5 @@ We are a team of passionate students and aspiring engineers dedicated to bridgin
 
 <p align="center">
   <b>Happy Coding! 🚀</b> <br/>
-  Made with ❤️ for Bajaj HackRX 2026
+  Made with ❤️ for VInd FinEdge Hackathon 2026
 </p>
