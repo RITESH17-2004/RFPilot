@@ -61,7 +61,7 @@ export default function ReviewAndPublishRFP({ params }: { params: Promise<{ id: 
       });
       if (res.ok) {
         alert('RFP Published Successfully! It is now live for vendors and RAG context is initialized.');
-        router.push('/bank');
+        router.push('/bank?view=management');
       }
     } catch (err) {
       alert('Error publishing RFP.');

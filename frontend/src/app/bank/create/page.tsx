@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, Sparkles, ShieldCheck, Cpu, Briefcase, IndianRupee, Calendar, Clock, CheckCircle, Zap } from 'lucide-react';
 import Link from 'next/link';
@@ -7,28 +7,47 @@ import Link from 'next/link';
 export default function CreateRFP() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-    project_type: "",
-    budget: "",
-    timeline: "",
-    requirements: "",
-    issuance_date: "",
-    submission_deadline: "",
-    evaluation_strategy: "",
-    bank_profile: {
-      bank_name: "Bajaj FinTech Bank",
-      department: "Digital Infrastructure",
-      contact_person: "Rahul Sharma",
-      contact_email: "rahul.sharma@bajaj.com",
-      location: "Pune, India"
-    },
-    // Expert Mode Fields
-    eligibility_criteria: "",
-    compliance_standards: "",
-    technical_stack: "",
-    sla_requirements: ""
+  
+  // Lazily initialize state from sessionStorage if it exists
+  const [formData, setFormData] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('rfpFormData');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error("Failed to parse saved form data", e);
+        }
+      }
+    }
+    return {
+      title: "",
+      project_type: "",
+      budget: "",
+      timeline: "",
+      requirements: "",
+      issuance_date: "",
+      submission_deadline: "",
+      evaluation_strategy: "",
+      bank_profile: {
+      bank_name: "Indian Bank",
+      department: "Digital Transformation & IT Procurement",
+      contact_person: "General Manager (IT)",
+      contact_email: "procurement@indianbank.co.in",
+      location: "Corporate Office, Chennai"
+      },
+      // Expert Mode Fields
+      eligibility_criteria: "",
+      compliance_standards: "",
+      technical_stack: "",
+      sla_requirements: ""
+    };
   });
+
+  // Automatically save to sessionStorage every time formData changes
+  useEffect(() => {
+    sessionStorage.setItem('rfpFormData', JSON.stringify(formData));
+  }, [formData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +60,9 @@ export default function CreateRFP() {
       });
       if (res.ok) {
         alert('RFP Draft generated via AI. You can now review it in the dashboard.');
-        router.push('/bank');
+        // Clear the saved form data upon successful submission
+        sessionStorage.removeItem('rfpFormData');
+        router.push('/bank?view=management');
       } else {
         alert('Failed to generate RFP.');
       }

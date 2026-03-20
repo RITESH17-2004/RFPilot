@@ -236,28 +236,82 @@ cd ../frontend && npm install && npm run dev
 > *The UI features a high-contrast "Institutional Blue" theme optimized for prolonged procurement reviews.*
 
 <table width="100%" style="border-collapse: collapse;">
+  <!-- ROW 1 -->
   <tr>
     <td width="50%" align="center" valign="top">
-      <b>1. Autonomous RFP Initiation</b><br><br>
-      <img src="35.png" width="100%" alt="Bank Admin Dashboard" /><br><br>
-      <i>Bank SMEs define project parameters, budgets, and expert constraints before the Multi-Silo RAG engine drafts the 11-section document.</i>
+      <b>1. Platform Home Page</b><br><br>
+      <img src="INSERT_HOME_IMAGE.png" width="100%" alt="Home Page" /><br><br>
+      <i>The main landing presentation for RFPilot.</i>
     </td>
     <td width="50%" align="center" valign="top">
-      <b>2. Corrigendum Command Center</b><br><br>
-      <img src="IMG_2543.PNG" width="100%" alt="AI RFP Drafting Interface" /><br><br>
-      <i>The Revision Engine applies Surgical JSON Mutations based on NLP instructions, generating updated PDFs without breaking structural integrity.</i>
+      <b>2. Bank Authentication (Login)</b><br><br>
+      <img src="INSERT_BANK_LOGIN_IMAGE.png" width="100%" alt="Bank Login" /><br><br>
+      <i>Secure portal access for Bank Administrators and SMEs.</i>
     </td>
   </tr>
+  <!-- ROW 2 -->
   <tr>
     <td width="50%" align="center" valign="top">
-      <b><br>3. Vendor RAG Support Portal</b><br><br>
-      <img src="wp2695245-portgas-d-ace-wallpaper.jpg" width="100%" alt="Intelligent Corrigendum Revision" /><br><br>
-      <i>Vendors ask complex questions; the Agentic Engine recurses through the active document to provide draft answers for Bank SME approval.</i>
+      <b><br>3. Bank Onboarding (Signup)</b><br><br>
+      <img src="INSERT_BANK_SIGNUP_IMAGE.png" width="100%" alt="Bank Signup" /><br><br>
+      <i>Institutional enrollment interface for new banking departments.</i>
     </td>
     <td width="50%" align="center" valign="top">
-      <b><br>4. Institutional Audit & History</b><br><br>
-      <img src="https://via.placeholder.com/800x450.png?text=Vendor+Query+Portal" width="100%" alt="Vendor RAG Support Portal" /><br><br>
-      <i>Every Corrigendum and AI clarification is cryptographically logged and displayed chronologically for transparent version control.</i>
+      <b><br>4. Vendor Authentication (Login)</b><br><br>
+      <img src="INSERT_VENDOR_LOGIN_IMAGE.png" width="100%" alt="Vendor Login" /><br><br>
+      <i>Isolated, secure portal access for service providers and tech vendors.</i>
+    </td>
+  </tr>
+  <!-- ROW 3 -->
+  <tr>
+    <td width="50%" align="center" valign="top">
+      <b><br>5. Vendor Onboarding (Signup)</b><br><br>
+      <img src="INSERT_VENDOR_SIGNUP_IMAGE.png" width="100%" alt="Vendor Signup" /><br><br>
+      <i>Supplier registration verifying compliance and partnership credentials.</i>
+    </td>
+    <td width="50%" align="center" valign="top">
+      <b><br>6. Bank Operational Dashboard</b><br><br>
+      <img src="INSERT_BANK_DASHBOARD_IMAGE.png" width="100%" alt="Bank Dashboard" /><br><br>
+      <i>High-level analytics and control center for all active RFP missions.</i>
+    </td>
+  </tr>
+  <!-- ROW 4 -->
+  <tr>
+    <td width="50%" align="center" valign="top">
+      <b><br>7. Autonomous RFP Generation</b><br><br>
+      <img src="INSERT_RFP_GEN_IMAGE.png" width="100%" alt="RFP Generation" /><br><br>
+      <i>Bank SMEs define project parameters before the RAG engine drafts the document.</i>
+    </td>
+    <td width="50%" align="center" valign="top">
+      <b><br>8. RFP Corrigendum & Modification</b><br><br>
+      <img src="INSERT_CORRIGENDUM_IMAGE.png" width="100%" alt="Corrigendum Page" /><br><br>
+      <i>Applying Surgical JSON Mutations to active RFPs without breaking structural integrity.</i>
+    </td>
+  </tr>
+  <!-- ROW 5 -->
+  <tr>
+    <td width="50%" align="center" valign="top">
+      <b><br>9. Bank Query Validation (HITL)</b><br><br>
+      <img src="INSERT_BANK_QUERY_IMAGE.png" width="100%" alt="Bank Query Page" /><br><br>
+      <i>Human-in-the-loop interface where SMEs approve AI-drafted responses to vendors.</i>
+    </td>
+    <td width="50%" align="center" valign="top">
+      <b><br>10. Vendor Home Page</b><br><br>
+      <img src="INSERT_VENDOR_HOME_IMAGE.png" width="100%" alt="Vendor Home" /><br><br>
+      <i>Centralized hub where vendors browse available RFPs and track submission statuses.</i>
+    </td>
+  </tr>
+  <!-- ROW 6 -->
+  <tr>
+    <td width="50%" align="center" valign="top">
+      <b><br>11. Vendor Amendments Tracking</b><br><br>
+      <img src="INSERT_VENDOR_AMENDMENTS_IMAGE.png" width="100%" alt="Vendor Amendments" /><br><br>
+      <i>A clear timeline of all official corrigenda and legal notices issued by the bank.</i>
+    </td>
+    <td width="50%" align="center" valign="top">
+      <b><br>12. Vendor Q&A Support Portal</b><br><br>
+      <img src="INSERT_VENDOR_QA_IMAGE.png" width="100%" alt="Vendor Q&A" /><br><br>
+      <i>Intelligent Agentic RAG chat where vendors seek instant PDF-grounded clarifications.</i>
     </td>
   </tr>
 </table>

@@ -12,15 +12,21 @@ class PDFGenerator:
     """
     def __init__(self, output_dir: str = "generated_rfps", template_dir: str = None):
         # Determine the base directory (backend/)
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        
+        # __file__ is backend/src/rfp/pdf_generator.py
+        # os.path.dirname(__file__) is backend/src/rfp
+        # os.path.dirname(os.path.dirname(__file__)) is backend/src
+        # os.path.dirname(os.path.dirname(os.path.dirname(__file__))) is backend/
+        current_dir = os.path.dirname(os.path.abspath(__file__)) # backend/src/rfp
+        src_dir = os.path.dirname(current_dir) # backend/src
+        backend_dir = os.path.dirname(src_dir) # backend/
+
         if output_dir == "generated_rfps":
-            self.output_dir = os.path.join(base_dir, "generated_rfps")
+            self.output_dir = os.path.join(backend_dir, "generated_rfps")
         else:
             self.output_dir = output_dir
             
         if template_dir is None:
-            self.template_dir = os.path.join(base_dir, "src", "templates")
+            self.template_dir = os.path.join(src_dir, "templates")
         else:
             self.template_dir = template_dir
             
