@@ -1,371 +1,331 @@
-# 🤖 LLM-Powered Intelligent Query–Retrieval System
+# 🏦 RFPilot: Procurement on Autopilot
 
-A sophisticated document processing and contextual decision-making system that handles real-world scenarios in **insurance, legal, HR, and compliance domains**. The system intelligently routes between **RAG pipelines** and **dynamic agents** based on document complexity analysis.
+---
 
-## 🎯 Problem Statement Alignment
+## 📌 Table of Contents
 
-**"Design an LLM-Powered Intelligent Query–Retrieval System that can process large documents and make contextual decisions for insurance, legal, HR, and compliance domains."**
+1. [Introduction](#intro)
+   - [Problem Statement](#problem-statement)
+   - [Solution](#solution)
+2. [Project Overview](#overview)
+3. [Key Features](#features)
+4. [System Architecture](#architecture)
+5. [Logic Flowcharts](#flowcharts)
+6. [Milestone Handling Workflow](#workflow)
+7. [Tech Stack](#tech-stack)
+8. [Installation & Setup](#setup)
+9. [Use Cases](#use-cases)
+10. [Visual Gallery](#gallery)
+11. [Key API Endpoints](#api)
+12. [Project Structure](#structure)
 
-✅ **Large Document Processing**: Multi-format support with streaming, chunking, and caching  
-✅ **Contextual Decisions**: Hybrid RAG + Agent routing with 8-type intent analysis  
-✅ **Real-world Domains**: Specialized processing for insurance, legal, HR, compliance  
-✅ **Intelligent Retrieval**: Vector similarity + keyword matching with confidence scoring  
+---
 
-## 🏗️ System Architecture
+## <a id="intro"></a>💡 1. Introduction
 
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Document URL  │───▶│ Input Validation │───▶│ Content         │
-│   (FastAPI)     │    │ & Security Check │    │ Analysis &      │
-│                 │    │ (zipfile,        │    │ Pipeline Router │
-└─────────────────┘    │  requests)       │    │ (regex patterns)│
-                       └──────────────────┘    └─────────────────┘
-                                                        │
-                       ┌────────────────────────────────┼────────────────────────────────┐
-                       ▼                                ▼                                ▼
-              ┌─────────────────┐              ┌─────────────────┐              ┌─────────────────┐
-              │   RAG PIPELINE  │              │ AGENT PIPELINE  │              │    FALLBACK    │
-              │ (Standard Docs) │              │ (Complex Docs)  │              │   PROCESSING   │
-              │                 │              │                 │              └─────────────────┘
-              │ ┌─────────────┐ │              │ ┌─────────────┐ │              
-              │ │Text Chunking│ │              │ │Mission      │ │              
-              │ │(PyMuPDF,    │ │              │ │Analysis     │ │              
-              │ │python-docx, │ │              │ │(GPT-Neo-    │ │              
-              │ │Tesseract    │ │              │ │2.7B, Distil │ │              
-              │ │OCR)         │ │              │ │BERT)        │ │              
-              │ └─────────────┘ │              │ └─────────────┘ │              
-              │ ┌─────────────┐ │              │ ┌─────────────┐ │              
-              │ │Embedding    │ │              │ │Tool         │ │              
-              │ │Generation   │ │              │ │Selection &  │ │              
-              │ │(Sentence    │ │              │ │Execution    │ │              
-              │ │Transformers,│ │              │ │(API calls,  │ │              
-              │ │CUDA/CPU)    │ │              │ │text parsing,│ │              
-              │ └─────────────┘ │              │ │doc search)  │ │              
-              │ ┌─────────────┐ │              │ └─────────────┘ │              
-              │ │Vector Store │ │              │ ┌─────────────┐ │              
-              │ │& Search     │ │              │ │Multi-turn   │ │              
-              │ │(FAISS,      │ │              │ │Reasoning    │ │              
-              │ │NumPy, SHA-  │ │              │ │(Iterative  │ │              
-              │ │256 caching) │ │              │ │problem      │ │              
-              │ └─────────────┘ │              │ │solving)     │ │              
-              │ ┌─────────────┐ │              │ └─────────────┘ │              
-              │ │Query        │ │              └─────────────────┘              
-              │ │Resolution   │ │              
-              │ │(Intent      │ │              
-              │ │analysis,    │ │              
-              │ │hybrid       │ │              
-              │ │search)      │ │              
-              │ └─────────────┘ │              
-              └─────────────────┘              
-                       │                                │
-                       ▼                                ▼
-        ┌─────────────────────────────────────────────────────────────────┐
-        │            MULTI-TIER LLM RESPONSE GENERATION                   │
-        │                                                                 │
-        │  🎯 PRIMARY: Mistral API (mistral-small-latest)                │
-        │     • Batch processing • Exponential backoff • Rate limiting    │
-        │                                                                 │
-        │  🔄 FALLBACK 1: Open Source Models (Hugging Face Transformers) │
-        │     • DistilBERT (Q&A) • GPT-Neo-2.7B (Generation)            │
-        │                                                                 │
-        │  ⚡ FALLBACK 2: Rule-based Pattern Matching                    │
-        │     • Insurance-specific patterns • Regex extraction           │
-        │                                                                 │
-        │  🛠️ POST-PROCESSING: tiktoken • asyncio • ThreadPoolExecutor  │
-        └─────────────────────────────────────────────────────────────────┘
+### <a id="problem-statement"></a>Problem Statement
+The traditional banking RFP (Request for Proposal) lifecycle is broken. It is slow, highly manual, and prone to regulatory errors.
+*   **Drafting Takes Weeks:** Manually aligning technical specs with 500+ pages of RBI Master Directions is tedious and creates massive compliance risks.
+*   **Query Bottlenecks:** Answering hundreds of repetitive or complex vendor questions drains SME (Subject Matter Expert) bandwidth and delays procurement.
+*   **Corrigendum Chaos:** A single clause or deadline change requires rewriting and redistributing the entire PDF, leading to versioning nightmares.
+
+---
+
+### <a id="solution"></a>Solution
+**RFPilot** transforms procurement from static text generation into **Autonomous Document Engineering**. 
+Instead of relying on a standard, error-prone AI chatbot, we engineered a specialized Cognitive Architecture designed specifically for institutional rigor.
+
+To deliver this level of precision, our platform treats every RFP as a **"Structured Intelligence Object,"** featuring:
+*   **Autonomous RFP Drafting:** Generates comprehensive, regulatory-compliant RFPs in minutes.
+*   **Isolated Database Silos:** Completely eliminates cross-domain hallucination.
+*   **Specialized AI Agents:** Handles complex, multi-turn reasoning for vendor queries.
+*   **Precise Document Mutation:** Performs surgical updates without breaking the original document structure.
+*   **Rigorous Human-in-the-Loop (HITL):** Ensures bank oversight and 100% regulatory compliance.
+
+*(See the [Key Features](#features) section below for an in-depth breakdown of these technical implementations).*
+
+---
+
+## <a id="overview"></a>📄 2. Project Overview
+**RFPilot** is a specialized, end-to-end GenAI platform designed to autonomously manage the high-stakes lifecycle of banking Request for Proposals (RFPs). 
+
+In institutional banking, drafting an RFP is not merely about writing a document; it is about synthesizing complex legal frameworks, strict regulatory mandates (such as the RBI Master Directions), and dense technical specifications into a single, cohesive contract. Traditionally, this process requires cross-departmental coordination (Legal, Procurement, IT) and takes anywhere from 30 to 45 days.
+
+**RFPilot fundamentally disrupts this workflow.** Built specifically for institutional rigor, it moves beyond the capabilities of generic LLM chatbots to provide a **deterministic, regulatory-dense document engine**. It allows banks to:
+1. **Autonomously Draft** comprehensive, 100+ page RFPs in minutes based on simple project parameters.
+2. **Resolve Vendor Queries** instantly using a secure, multi-turn RAG (Retrieval-Augmented Generation) agent that grounds its answers solely in the bank's verified knowledge base.
+3. **Issue Surgical Corrigenda** (amendments) without manually rewriting or breaking the original document structure.
+
+By treating the RFP as a "Structured Intelligence Object" rather than plain text, RFPilot ensures 100% compliance with institutional standards while reducing procurement cycles from months to minutes.
+
+---
+
+## <a id="features"></a>✨ 3. Key Features
+
+### 1️⃣ Autonomous RFP Drafting Engine
+*   **Chain-of-Context Memory**: Drafts 11-section documents sequentially, remembering timelines and budgets from Section 1 to ensure Section 11 (Penalties) aligns perfectly.
+*   **Expert Configuration Mode**: Allows bank admins to inject specific institutional constraints (e.g., "Must comply with zero-trust architecture") directly into the prompt.
+*   **Jinja2 PDF Rendering**: Outputs a highly professional, formatted PDF complete with institutional CSS stationery, ready for immediate vendor distribution.
+
+### 2️⃣ Multi-Silo RAG Infrastructure
+*   **Cognitive Siloing**: Vectors are split into 5 distinct databases (Legal, Technical, Compliance, Procurement, Templates) to completely eliminate cross-domain hallucination.
+*   **Regulatory Injection**: Automatically grounds requirements in the latest uploaded RBI Master Directions and World Bank frameworks.
+
+### 3️⃣ Intelligent Vendor Query Portal (Agentic RAG)
+*   **Multi-Turn Reasoning**: Deploys a recursive agent (up to 10 turns) to dissect complex vendor queries, search the RFP, analyze gaps, and refine its search before answering.
+*   **Human-in-the-Loop (HITL) Validation**: The AI drafts the response, but a Bank SME must review, edit, and click "Approve" before it is published, ensuring zero legal liability.
+*   **Intent Extraction**: Analyzes if a question is Mathematical, Policy-Based, or Administrative to route it to the optimal reasoning logic.
+
+### 4️⃣ Surgical Corrigendum Management (SJM)
+*   **Structured JSON Mutation**: Modifies active RFPs using NLP (e.g., "Delay deadline by 5 days") by altering specific JSON nodes rather than rewriting the entire document, preserving structural integrity.
+*   **Automated Legal Notices**: Generates an official, side-by-side "Original vs. Revised" Corrigendum Notice PDF for complete transparency.
+*   **Auto-Vector Sync**: Instantly clears and re-indexes the Vector Store upon document modification so the Query Engine is always using the absolute latest version.
+
+### 5️⃣ Institutional Audit & Security
+*   **Immutable Ledger**: Cryptographically logs every action—from initial draft generation to query approvals and corrigendum issuances.
+*   **Role-Based Access Control (RBAC)**: Distinct, isolated frontend portals for Bank Admins vs. Vendors.
+
+---
+
+## <a id="architecture"></a>🏗️ 4. System Architecture
+
+<p align="center">
+  <img src="./assests/diagrams/system-architecture-rfpilot.png" width="850px" alt="System Architecture Diagram" />
+</p>
+
+---
+
+## <a id="flowcharts"></a>🛤️ 5. Logic Flowcharts
+
+<table width="100%" style="border-collapse: collapse;">
+  <tr>
+    <td width="33%" align="center" valign="bottom"><b>1. RFP Generation Flow</b></td>
+    <td width="33%" align="center" valign="bottom"><b>3. Corrigendum Flow</b></td>
+    <td width="33%" align="center" valign="bottom"><b>2. Vendor Query Flow</b></td>
+  </tr>
+  <tr>
+    <td align="center" valign="middle"><br><img src="./assests/diagrams/rfp-gen-flow.png" width="100%" alt="RFP Generation Flowchart" /></td>
+    <td align="center" valign="middle"><br><img src="./assests/diagrams/corrigendum-flow.png" width="100%" alt="Corrigendum Flowchart" /></td>
+    <td align="center" valign="middle"><br><img src="./assests/diagrams/vendor-query-flow.png" width="100%" alt="Vendor Query Flowchart" /></td>
+  </tr>
+</table>
+
+---
+
+## <a id="workflow"></a>🔄 6. Milestone Handling Workflow
+
+```mermaid
+sequenceDiagram
+    participant B as Bank Admin
+    participant S as FastAPI Server
+    participant DB as SQLite
+    participant V as FAISS Vector Store
+    participant L as Mistral LLM
+    participant P as PDF Generator
+
+    %% Milestone 1
+    rect rgb(30, 41, 59)
+    Note over B, P: Milestone 1: Automated RFP Drafting
+    B->>S: Submit Project Parameters & Expert Config
+    S->>V: Retrieve Bank Standards (Legal, Tech, etc.)
+    V-->>S: Relevant Institutional Context
+    S->>L: Context + Project Config Prompt
+    L-->>S: Structured JSON RFP Array
+    S->>DB: Save Draft Status
+    S->>P: Render Formal Jinja2 PDF
+    S-->>B: Return Generated Draft
+    end
+
+    %% Milestone 2
+    rect rgb(15, 23, 42)
+    Note over B, L: Milestone 2: Query Resolution Workflow
+    participant Ven as Vendor
+    Ven->>S: Submits Clarification Query
+    S->>V: Search Published Document Embeddings
+    V-->>S: Relevant Chunks / Context
+    S->>L: Document Context + Vendor Question
+    L-->>S: Grounded AI Proposed Answer
+    S->>DB: Save as "Pending Approval"
+    S-->>Ven: Acknowledge Receipt
+    S-->>B: Notify of Pending Query
+    B->>S: Review AI Output -> Accept/Edit -> Publish
+    S->>DB: Mark "Answered"
+    S-->>Ven: Display Official Answer
+    end
+
+    %% Milestone 3
+    rect rgb(30, 41, 59)
+    Note over B, P: Milestone 3: Automatic Corrigendum Generation
+    B->>S: Submit Natural Language Changes
+    S->>L: Original RFP JSON + Change Prompt
+    L-->>S: Surgically Updated RFP JSON
+    S->>L: Original + New + Prompt
+    L-->>S: Formal Corrigendum Legal Notice
+    S->>DB: Save New Version & Notice
+    S->>V: Clear Cache & Re-index Updated Document
+    S->>P: Render Updated RFP PDF
+    S-->>B: Return Corrigendum Package
+    end
 ```
 
 ---
 
-## ⚙️ How It Works
+## <a id="tech-stack"></a>🛠️ 7. Tech Stack
 
-1. **Document Input & Validation**
-   - User uploads a document URL or file via **FastAPI**.
-   - `InputValidator` checks:
-     - File format, size limits, and allowed types.
-     - ZIP bomb protection (≤100MB, ≤1000 files).
-     - URL sanitization and malicious link filtering.
-   - Supported formats: PDF, DOCX, PPTX, XLSX, Images, Emails, ZIP archives.
-
-2. **Content Extraction & Preprocessing**
-   - `DocumentTextExtractor` handles parsing:
-     - **PyMuPDF (fitz)** → PDF  
-     - **python-docx** → Word  
-     - **python-pptx** → PowerPoint  
-     - **pandas/openpyxl** → Excel  
-     - **Tesseract OCR** → Images  
-     - **BeautifulSoup** → Emails/HTML
-   - Smart chunking: Splits into 512-word segments with 50-word overlaps.
-   - Extracted content is cleaned and normalized.
-
-3. **Pipeline Routing**
-   - `PipelineRouter` decides the processing path:
-     - **RAG Pipeline** → Standard structured documents.
-     - **Agent Pipeline** → Complex documents with URLs, APIs, or multi-step reasoning.
-     - **Fallback Processing** → Simple regex/pattern-based extraction.
-
-4. **RAG Pipeline (Standard Docs)**
-   - Embedding generation via **Sentence Transformers** (MiniLM).
-   - GPU acceleration with CUDA or CPU fallback.
-   - Storage & search in **FAISS** vector store (SHA-256 caching).
-   - Hybrid search: Vector similarity + keyword matching.
-   - Query resolution with intent analysis.
-
-5. **Agent Pipeline (Complex Docs)**
-   - Mission analysis with **GPT-Neo-2.7B** and **DistilBERT**.
-   - Tool selection & execution (API calls, parsing, doc search).
-   - Multi-turn reasoning for iterative problem solving.
-
-6. **Multi-Tier LLM Response Generation**
-   - **Primary**: Mistral API (mistral-small-latest) for high-quality responses.
-   - **Fallback 1**: Hugging Face models (DistilBERT for Q&A, GPT-Neo-2.7B for generation).
-   - **Fallback 2**: Rule-based extraction for domain-specific queries.
-   - Post-processing with `tiktoken`, async pipelines, and thread pools.
-
-7. **Security & Logging**
-   - Input sanitization and malicious content blocking.
-   - Bearer token authentication for API access.
-   - Complete request/response audit logging.
-
-8. **Response Delivery**
-   - Final, context-aware answers returned in structured JSON.
-   - Can include direct text answers, extracted data tables, or step-by-step reasoning.
+| Layer | Technology |
+| :--- | :--- |
+| **Frontend** | Next.js 16, React 19, Tailwind CSS v4, Lucide React |
+| **Backend** | FastAPI (Python 3.11+), Uvicorn |
+| **Intelligence** | Mistral AI, Sentence-Transformers, PyTorch |
+| **Data Processing** | PyMuPDF, PyTesseract, Langchain Text Splitters |
+| **Vector Store** | FAISS (Facebook AI Similarity Search) |
+| **Database & Auth** | Supabase, SQLAlchemy, SQLite (PostgreSQL Ready via pg8000) |
+| **PDF Engine** | Jinja2 + xhtml2pdf |
 
 ---
 
-## 🛠️ Tech Stack
+## <a id="setup"></a>⚙️ 8. Installation & Setup
 
-### **Backend Framework**
-- **FastAPI** - High-performance async web framework
-- **Uvicorn** - ASGI server for production deployment
-- **Python 3.8+** - Core programming language
-
-### **Document Processing**
-- **PyMuPDF (fitz)** - Advanced PDF text extraction with streaming
-- **python-docx** - Microsoft Word document processing  
-- **pandas + openpyxl** - Excel file data extraction
-- **python-pptx + olefile** - PowerPoint presentation processing
-- **Tesseract OCR + Pillow** - Image text extraction and processing
-- **email + BeautifulSoup** - Email parsing and HTML content extraction
-- **zipfile + requests** - Archive handling with security validation
-
-### **AI/ML Stack**
-- **Sentence Transformers** - Semantic embedding generation (paraphrase-MiniLM-L3-v2)
-- **FAISS** - High-performance vector similarity search
-- **NumPy** - Numerical computing and vector operations
-- **PyTorch + CUDA** - GPU acceleration with CPU fallback
-- **Mistral AI API** - Primary LLM for answer generation
-- **Hugging Face Transformers** - Fallback models (DistilBERT, GPT-Neo-2.7B)
-- **tiktoken** - Token counting and text truncation
-
-### **Performance & Infrastructure**
-- **asyncio + aiofiles** - Asynchronous I/O operations
-- **ThreadPoolExecutor** - Concurrent processing management
-- **pickle** - Model and data serialization
-- **hashlib** - SHA-256 based caching system
-- **logging** - Comprehensive system monitoring
-
-### **Security & Validation**
-- **pydantic** - Request/response validation
-- **python-dotenv** - Environment variable management
-- **requests** - HTTP client with security features
-- **regex** - Pattern matching and content analysis
-
-## 🔧 Core System Components
-
-### **1. Document Processing Pipeline (`DocumentTextExtractor`)**
-- **Multi-format Support**: PDF, DOCX, Excel, PowerPoint, Images, Email, ZIP archives
-- **Streaming Processing**: Memory-efficient handling of large files (10MB+)
-- **OCR Integration**: Tesseract for image text extraction with multiple languages
-- **Smart Chunking**: 512-word chunks with 50-word overlap for context preservation
-- **Security Validation**: ZIP bomb protection and malicious content filtering
-
-### **2. Embedding & Vector Intelligence (`EmbeddingGenerator` + `FAISSVectorStore`)**
-- **Semantic Understanding**: Sentence-transformers for contextual embeddings
-- **GPU Acceleration**: Automatic CUDA detection with CPU fallback
-- **High-Performance Search**: FAISS IndexFlatIP for similarity matching
-- **Persistent Caching**: SHA-256 based vector store persistence
-- **Batch Processing**: Optimized embedding generation (32 chunks/batch)
-
-### **3. Query Intelligence System (`QueryResolver`)**
-- **Intent Analysis**: 8 query types (coverage, timing, mathematical, definitional, etc.)
-- **Hybrid Search**: Semantic similarity + keyword overlap scoring
-- **Context Adaptation**: Response style based on query complexity
-- **Relevance Boosting**: Dynamic scoring with similarity thresholds
-- **Domain Expertise**: Insurance, legal, HR, compliance specific patterns
-
-### **4. Multi-Tier LLM Integration (`AnswerGenerationEngine`)**
-- **Primary LLM**: Mistral API with batch processing and rate limiting
-- **Fallback Models**: Hugging Face Transformers (DistilBERT + GPT-Neo-2.7B)
-- **Rule-based Engine**: Pattern matching for insurance-specific queries
-- **Content-Type Detection**: Mathematical, data, policy, general content handling
-- **Post-processing**: Text cleaning, URL fixing, confidence scoring
-
-### **5. Intelligent Agent System (`IntelligentAgent` + Tools)**
-- **Dynamic Reasoning**: Multi-turn problem solving with RAG integration
-- **Tool Execution**: API calls, text parsing, conditional logic
-- **Mission Analysis**: Complex document interpretation and goal extraction
-- **Iterative Solving**: Up to 10 turns with action history tracking
-- **Contextual Decisions**: State management and result aggregation
-
-### **6. Security & Validation (`InputValidator`)**
-- **ZIP Bomb Protection**: File size and count validation (100MB/1000 files limits)
-- **URL Sanitization**: Malicious link detection and cleaning
-- **Content Analysis**: Automatic routing decision based on document patterns
-- **Request Logging**: Comprehensive audit trail with timestamps
-- **Bearer Token Authentication**: Secure API access control
-
-## 🚀 Quick Start (Complete Setup Guide)
-
-### **1. Clone & Core Setup**
+### **1. Environment Setup**
 ```bash
-git clone <repository-url>
-cd bajaj-hackrx
-```
-
-### **2. Backend Setup (Python)**
-Ensure you have **Python 3.10+** and **Tesseract OCR** installed.
-
-```bash
-# Navigate to backend
-cd backend
-
-# Create and activate virtual environment
-python -m venv .venv
-source .venv/bin/activate  # Linux/macOS
-# OR 
-.\.venv\Scripts\activate   # Windows
-
-# Install dependencies
+git clone https://github.com/your-repo/RFPilot.git
+cd RFPilot/backend
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
+```
 
-# --- CRITICAL: Knowledge Base Ingestion ---
-# 1. Distribute master PDFs into category silos
+### **2. Knowledge Base Ingestion (Mandatory)**
+RFPilot requires its cognitive silos to be initialized before the first run.
+```bash
+# A. Parse Golden Source PDFs (RBI/World Bank)
 python ingest_golden_source.py
 
-# 2. Process silos into FAISS vector indexes
+# B. Build FAISS Vector Indexes
 python ingest_kb.py
 ```
 
-### **3. Configuration**
-Create a `.env` file in the `backend/` directory:
+### **3. Launch**
 ```bash
-BEARER_TOKEN=250e6c57e9ef2aa5088d3bf610d72b73959b78486a62e066fd94ef74bc103c73
-MISTRAL_API_KEY=your-mistral-api-key-here
-DATABASE_URL=sqlite:///./rfp_system.db  # For local development
-```
-
-### **4. Run Backend**
-```bash
+# Start Backend (Port 8000)
 python start_server.py
-# Backend starts at http://localhost:8000
+
+# Start Frontend (Port 3000)
+cd ../frontend && npm install && npm run dev
 ```
-
-### **5. Frontend Setup (Next.js)**
-In a new terminal:
-```bash
-# Navigate to frontend
-cd frontend
-
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-# Frontend starts at http://localhost:3000
-```
-
-## 📚 API Usage
-
-### **Main Processing Endpoint**
-```http
-POST /hackrx/run
-Authorization: Bearer 250e6c57e9ef2aa5088d3bf610d72b73959b78486a62e066fd94ef74bc103c73
-Content-Type: application/json
-
-{
-    "documents": "https://example.com/insurance-policy.pdf",
-    "questions": [
-        "What is the grace period for premium payment?",
-        "Does this policy cover maternity expenses?",
-        "What are the waiting periods for pre-existing diseases?"
-    ]
-}
-```
-
-### **Intelligent Response Generation**
-```json
-{
-    "answers": [
-        "A grace period of thirty days is provided for premium payment after the due date to maintain policy continuity.",
-        "Yes, the policy covers maternity expenses after a waiting period of 24 months of continuous coverage.",
-        "Pre-existing diseases have a waiting period of 48 months from policy inception for coverage eligibility."
-    ]
-}
-```
-
-## 🧠 Intelligence Features
-
-### **Automatic Pipeline Routing**
-The system automatically analyzes document content and routes to appropriate pipeline:
-- **RAG Pipeline**: Standard documents (insurance policies, contracts, HR manuals)
-- **Agent Pipeline**: Complex documents with URLs, APIs, or multi-step instructions
-- **Fallback Processing**: Error handling and simple pattern matching
-
-### **Domain-Specific Query Understanding**
-- **Insurance**: Policy coverage, premiums, waiting periods, exclusions, claims processing
-- **Legal**: Contract clauses, compliance requirements, liability assessment, risk evaluation  
-- **HR**: Benefits analysis, policy interpretation, procedure documentation
-- **Compliance**: Regulatory requirements, standards checking, audit trails
-
-### **Advanced Query Types**
-- **Coverage Questions**: "Does policy cover X?", "Is Y included?"
-- **Timing Queries**: "What is waiting period?", "When does coverage start?"
-- **Mathematical Operations**: Exact calculation reporting from source material
-- **Definitional Queries**: "What is X?", "Define Y", explanations
-- **Data Extraction**: Amounts, percentages, specific values, structured data
-
-## 📊 Performance & Scalability
-
-### **Performance Metrics**
-- **Response Latency**: < 2 seconds average (1.5s typical)
-- **Document Processing**: 10MB+ files in ~15 seconds
-- **Concurrent Users**: 100+ simultaneous requests supported
-- **Accuracy**: 92% for domain-specific queries
-- **Token Efficiency**: 750 tokens average per query
-
-### **Scalability Features**
-- **Async Processing**: Non-blocking I/O with ThreadPoolExecutor
-- **Vector Caching**: Persistent FAISS indexes with SHA-256 keys
-- **GPU Acceleration**: CUDA auto-detection for embedding generation
-- **Batch Optimization**: Multi-query processing for LLM APIs
-- **Horizontal Scaling**: FastAPI instances with load balancer ready
-
-### **Production Readiness**
-- **Comprehensive Logging**: Debug, info, warning, error levels
-- **Error Handling**: Graceful degradation with multiple fallback layers
-- **Health Monitoring**: `/health` endpoint for system status
-- **Security Validation**: Input sanitization and content filtering
-- **Docker Support**: Container deployment ready
-
-## 🔒 Security Implementation
-
-- **ZIP Bomb Protection**: File size (100MB) and count (1000 files) validation
-- **URL Sanitization**: Malicious link detection and domain validation
-- **Content Security**: Safe text extraction preventing code injection
-- **Input Validation**: Comprehensive request structure validation
-- **Bearer Token Auth**: Secure API access with token verification
-- **Audit Logging**: Complete request/response tracking for compliance
-
-## 🏆 Key Technical Innovations
-
-1. **Hybrid Intelligence Architecture**: Seamless RAG-Agent routing based on document complexity analysis
-2. **Multi-Modal Document Processing**: Text, images, structured data in unified pipeline  
-3. **3-Tier LLM Hierarchy**: Mistral API → Open Source → Rule-based with intelligent fallbacks
-4. **Security-First Design**: Comprehensive input validation and content sanitization
-5. **Domain Expertise Integration**: Specialized patterns for insurance, legal, HR, compliance
-6. **Performance Optimization**: GPU acceleration, async processing, intelligent caching
 
 ---
 
-*Enterprise-grade LLM integration • Multi-format processing • Contextual decision making • Real-world domain expertise*
+## <a id="use-cases"></a>🎯 9. Use Cases
+
+*   **High-Velocity Tech Procurement:** Instantly draft complex, highly-technical RFPs for Core Banking System (CBS) migrations, Cloud Security SOCs, or Mobile App upgrades without sacrificing institutional depth.
+*   **Automated Regulatory Compliance:** Automatically synthesize and inject the latest RBI IT Outsourcing mandates, data localization laws, and global World Bank bidding rules into every document generated.
+*   **Streamlined Vendor Management:** Centralize all vendor queries into a single, AI-powered "Source of Truth" portal, eliminating email chains and ensuring every clarification is formally documented and approved by a human SME.
+*   **Frictionless Document Versioning:** Issue official corrigenda (amendments) without the risk of breaking existing formatting, ensuring a clear and auditable history for all active tender operations.
+
+---
+
+## <a id="gallery"></a>📸 10. Visual Gallery
+
+> *The UI features a high-contrast "Institutional Blue" theme optimized for prolonged procurement reviews.*
+
+<table width="100%" style="border-collapse: collapse;">
+  <tr>
+    <td width="50%" align="center" valign="top">
+      <b>1. Autonomous RFP Initiation</b><br><br>
+      <img src="35.png" width="100%" alt="Bank Admin Dashboard" /><br><br>
+      <i>Bank SMEs define project parameters, budgets, and expert constraints before the Multi-Silo RAG engine drafts the 11-section document.</i>
+    </td>
+    <td width="50%" align="center" valign="top">
+      <b>2. Corrigendum Command Center</b><br><br>
+      <img src="IMG_2543.PNG" width="100%" alt="AI RFP Drafting Interface" /><br><br>
+      <i>The Revision Engine applies Surgical JSON Mutations based on NLP instructions, generating updated PDFs without breaking structural integrity.</i>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center" valign="top">
+      <b><br>3. Vendor RAG Support Portal</b><br><br>
+      <img src="wp2695245-portgas-d-ace-wallpaper.jpg" width="100%" alt="Intelligent Corrigendum Revision" /><br><br>
+      <i>Vendors ask complex questions; the Agentic Engine recurses through the active document to provide draft answers for Bank SME approval.</i>
+    </td>
+    <td width="50%" align="center" valign="top">
+      <b><br>4. Institutional Audit & History</b><br><br>
+      <img src="https://via.placeholder.com/800x450.png?text=Vendor+Query+Portal" width="100%" alt="Vendor RAG Support Portal" /><br><br>
+      <i>Every Corrigendum and AI clarification is cryptographically logged and displayed chronologically for transparent version control.</i>
+    </td>
+  </tr>
+</table>
+
+---
+
+## <a id="api"></a>📡 11. Key API Endpoints
+
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/rfp/draft` | `POST` | Triggers the section-by-section drafting engine. |
+| `/rfp/update/{id}` | `POST` | Performs surgical JSON updates and generates Corrigendum. |
+| `/vendor/query` | `POST` | Deploys the Multi-Turn Agent to resolve vendor queries. |
+| `/bank/query/{id}/approve` | `POST` | Allows bank SME to finalize AI-generated answers. |
+
+---
+
+## <a id="structure"></a>📂 12. Project Structure
+
+### **Backend (FastAPI + AI Engine)**
+```text
+backend/
+├── src/
+│   ├── rag/                     
+│   │   ├── intelligent_agent.py 
+│   │   ├── query_resolver.py    
+│   │   ├── faiss_vector_store.py 
+│   │   ├── embedding_generator.py 
+│   │   └── answer_generation_engine.py 
+│   ├── rfp/                    
+│   │   ├── rfp_generator.py     
+│   │   ├── corrigendum_generator.py 
+│   │   └── pdf_generator.py    
+│   ├── templates/             
+│   ├── models.py             
+│   ├── database.py              
+│   ├── input_validator.py      
+│   └── api_request_logger.py    
+├── data/                       
+│   └── knowledge_base/          
+├── start_server.py             
+├── ingest_kb.py               
+├── ingest_golden_source.py    
+└── config.py                    
+```
+
+### **Frontend (Next.js Portals)**
+```text
+frontend/
+├── src/app/                    
+│   ├── bank/               
+│   │   ├── create/            
+│   │   ├── review/            
+│   │   ├── modify/           
+│   │   └── queries/            
+│   ├── vendor/                
+│   │   └── [id]/            
+│   └── (auth)/                 
+├── src/components/             
+└── src/lib/                     
+```
+
+---
+
+## 👥 About the Team
+We are a team of passionate students and aspiring engineers dedicated to bridging the gap between cutting-edge AI and institutional rigor. As young innovators, we focus on building tools that empower organizations to navigate complex regulatory landscapes with speed and precision.
+
+*   **Ritesh Chaudhari**
+*   **Ninad Mahajan**
+*   **Arya Amte**
+
+---
+
+<p align="center">
+  <b>Happy Coding! 🚀</b> <br/>
+  Made with ❤️ for Bajaj HackRX 2026
+</p>
