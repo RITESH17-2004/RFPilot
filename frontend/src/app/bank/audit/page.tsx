@@ -113,7 +113,7 @@ export default function AuditTrail() {
                 ) : (
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50/50 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 border-b border-slate-100">
+                            <tr className="bg-[#0a1628] text-[10px] font-black uppercase tracking-[0.15em] text-[#c8a96a]">
                                 <th className="px-10 py-6">Timestamp</th>
                                 <th className="px-10 py-6">Event Context</th>
                                 <th className="px-10 py-6">Activity Details</th>
@@ -125,7 +125,7 @@ export default function AuditTrail() {
                                 <tr key={log.id} className="hover:bg-slate-50/40 transition-all group">
                                     <td className="px-10 py-8">
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-slate-100 rounded-xl text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-all">
+                                            <div className="p-2 bg-slate-100 rounded-xl text-slate-400 group-hover:text-[#c8a96a] group-hover:bg-[#c8a96a]/10 transition-all">
                                                 <Clock size={16} />
                                             </div>
                                             <div>
@@ -155,7 +155,7 @@ export default function AuditTrail() {
                                                 <p className="text-xs font-black text-slate-700">{log.actor?.split('@')[0] || 'System'}</p>
                                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{log.actor === 'SYSTEM' ? 'Automated' : 'Manual Entry'}</p>
                                             </div>
-                                            <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                            <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 transition-all">
                                                 <User size={18} />
                                             </div>
                                         </div>
