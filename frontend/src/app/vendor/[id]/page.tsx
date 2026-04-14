@@ -88,9 +88,10 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
                 </h4>
                 <p className="text-base font-bold text-slate-800 leading-relaxed italic">"{selectedCorrigendum.change_summary}"</p>
               </div>
-              <div className="whitespace-pre-wrap text-[15px] text-slate-600 leading-relaxed font-medium bg-slate-50/30 p-6 rounded-3xl border border-slate-100">
-                {selectedCorrigendum.full_notice}
-              </div>
+              <div 
+                className="w-full overflow-x-auto text-[14px] text-slate-600 leading-relaxed font-medium bg-slate-50/50 p-8 rounded-3xl border border-slate-100 shadow-inner"
+                dangerouslySetInnerHTML={{ __html: selectedCorrigendum.full_notice }}
+              />
             </div>
             <div className="p-8 bg-white border-t border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-2.5 text-slate-400 text-[10px] font-black uppercase tracking-widest bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
@@ -265,7 +266,7 @@ export default function VendorRFPDetail({ params }: { params: Promise<{ id: stri
                                                         </h3>
                                                         
                                                         <p className="text-sm font-medium text-slate-500 leading-relaxed mb-6 line-clamp-2">
-                                                            {c.full_notice.substring(0, 200)}...
+                                                            {c.full_notice.replace(/<[^>]*>?/gm, '').substring(0, 200)}...
                                                         </p>
                                                         
                                                         <div className="flex items-center justify-between pt-6 border-t border-slate-50">

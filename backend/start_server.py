@@ -426,11 +426,14 @@ async def update_draft_silent(rfp_id: int, request: RFPUpdateRequest, db: Sessio
 
     try:
         original_content = rfp.content
-        # Apply intelligent update logic
-        final_updated_content = await app.state.corrigendum_generator.apply_intelligent_update(
-            original_content, 
-            request.change_summary
-        )
+        if request.updated_content:
+            final_updated_content = request.updated_content
+        else:
+            # Apply intelligent update logic
+            final_updated_content, _ = await app.state.corrigendum_generator.apply_intelligent_update(
+                original_content, 
+                request.change_summary
+            )
 
         # Update RFP in Database
         rfp.content = final_updated_content
@@ -447,7 +450,20 @@ async def update_draft_silent(rfp_id: int, request: RFPUpdateRequest, db: Sessio
             sections = []
 
         bank_name = rfp.project_details.get('bank_profile', {}).get('bank_name', 'Indian Bank')
-        submission_deadline = rfp.project_details.get('submission_deadline', 'As per Schedule')
+        
+        # Extract potentially new deadline from changes
+        original_deadline = rfp.project_details.get('submission_deadline', 'As per Schedule')
+        new_deadline = await app.state.corrigendum_generator.extract_deadline(original_deadline, request.change_summary)
+        
+        if new_deadline and new_deadline != original_deadline:
+            updated_details = dict(rfp.project_details)
+            updated_details['submission_deadline'] = new_deadline
+            rfp.project_details = updated_details
+            db.commit()
+            submission_deadline = new_deadline
+        else:
+            submission_deadline = original_deadline
+            
         app.state.pdf_generator.generate_rfp_pdf(rfp.id, rfp.title, sections, bank_name, submission_deadline=submission_deadline)
 
         logging.info(f"Draft RFP {rfp_id} updated silently.")
@@ -477,12 +493,13 @@ async def update_rfp_and_generate_corrigendum(rfp_id: int, request: RFPUpdateReq
     try:
         # 1. Determine the updated content
         original_content = rfp.content
+        diff_data = ""
         if request.updated_content:
             final_updated_content = request.updated_content
         else:
             # INTELLIGENT UPDATE: AI applies changes to original
             logging.info(f"Triggering Intelligent Update for RFP {rfp_id}")
-            final_updated_content = await app.state.corrigendum_generator.apply_intelligent_update(
+            final_updated_content, diff_data = await app.state.corrigendum_generator.apply_intelligent_update(
                 original_content, 
                 request.change_summary
             )
@@ -490,8 +507,8 @@ async def update_rfp_and_generate_corrigendum(rfp_id: int, request: RFPUpdateReq
         # 2. Generate formal Corrigendum Notice using LLM
         version_num = len(rfp.corrigenda) + 1
         notice_content = await app.state.corrigendum_generator.generate_notice(
-            original_content, 
-            final_updated_content, 
+            diff_data, 
+            None, 
             request.change_summary
         )
         
@@ -535,7 +552,20 @@ async def update_rfp_and_generate_corrigendum(rfp_id: int, request: RFPUpdateReq
 
         # 6. Re-generate PDF with updated content
         bank_name = rfp.project_details.get('bank_profile', {}).get('bank_name', 'Indian Bank')
-        submission_deadline = rfp.project_details.get('submission_deadline', 'As per Schedule')
+        
+        # Extract potentially new deadline from changes
+        original_deadline = rfp.project_details.get('submission_deadline', 'As per Schedule')
+        new_deadline = await app.state.corrigendum_generator.extract_deadline(original_deadline, request.change_summary)
+        
+        if new_deadline and new_deadline != original_deadline:
+            updated_details = dict(rfp.project_details)
+            updated_details['submission_deadline'] = new_deadline
+            rfp.project_details = updated_details
+            db.commit()
+            submission_deadline = new_deadline
+        else:
+            submission_deadline = original_deadline
+            
         app.state.pdf_generator.generate_rfp_pdf(rfp.id, rfp.title, sections, bank_name, submission_deadline=submission_deadline)
 
         logging.info(f"RFP {rfp_id} updated via intelligent logic. Corrigendum {version_num} issued.")

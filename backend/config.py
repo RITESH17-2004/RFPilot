@@ -17,6 +17,7 @@ class Config:
     """
     # API Keys and Tokens
     MISTRAL_API_KEY: Optional[str] = _clean_env('MISTRAL_API_KEY')
+    MISTRAL_API_KEY_2: Optional[str] = _clean_env('MISTRAL_API_KEY_2')
     BEARER_TOKEN: Optional[str] = _clean_env('BEARER_TOKEN')
 
     # Directory for caching models

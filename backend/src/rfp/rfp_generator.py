@@ -146,11 +146,11 @@ Generate Section {section['num']} JSON now:
                     self.decision_engine.client.chat.complete,
                     model="mistral-small-latest",
                     messages=[
-                        {"role": "system", "content": "You are a professional banking document generator. You output only valid JSON with legally-dense and technically-accurate content."},
+                        {"role": "system", "content": "You are a professional banking document generator. You output only valid JSON with legally-dense and technically-accurate content. BE CONCISE if you hit API limits."},
                         {"role": "user", "content": prompt}
                     ],
                     temperature=0.15,
-                    max_tokens=4000,
+                    max_tokens=8192,
                     response_format={"type": "json_object"}
                 )
             )
