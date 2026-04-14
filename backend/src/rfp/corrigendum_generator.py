@@ -28,6 +28,38 @@ class CorrigendumGenerator:
             self.secondary_client = Mistral(api_key=Config.MISTRAL_API_KEY_2)
             logging.info("Secondary Mistral Client active! Load balancing enabled.")
 
+    async def extract_deadline(self, current_deadline: str, changes: str) -> str:
+        """Uses LLM to determine if the deadline changed and extract the new date."""
+        prompt = f"""You are analyzing changes to an RFP document.
+CURRENT SUBMISSION DEADLINE: {current_deadline}
+CHANGES TO APPLY: {changes}
+
+If the changes explicitly mention extending, delaying, or modifying the submission deadline, calculate or extract the NEW deadline date.
+Format it consistently (e.g., YYYY-MM-DD if possible, or copy exactly the new date written).
+If the changes DO NOT affect the submission deadline at all, output EXACTLY the CURRENT SUBMISSION DEADLINE shown above.
+OUTPUT ONLY THE DEADLINE STRING. No introductory text whatsoever."""
+        try:
+            if not self.decision_engine.use_mistral: return current_deadline
+            client_to_use = self.secondary_client if self.secondary_client else self.decision_engine.client
+            messages = [
+                {"role": "system", "content": "You extract dates perfectly. Output only the final date."},
+                {"role": "user", "content": prompt}
+            ]
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                self.decision_engine.executor,
+                functools.partial(
+                    client_to_use.chat.complete,
+                    model="mistral-small-latest",
+                    messages=messages,
+                    temperature=0.1,
+                    max_tokens=60
+                )
+            )
+            return response.choices[0].message.content.strip()
+        except:
+            return current_deadline
+
     async def generate_notice(self, original_content: str, updated_content: str, changes: str) -> str:
         """
         Uses LLM to generate a formal corrigendum notice based on specific changes.
@@ -36,8 +68,10 @@ class CorrigendumGenerator:
         logging.info("Generating corrigendum notice.")
         
         # Sanitize inputs to prevent encoding crashes
-        safe_original = sanitize_text(original_content[:1000])
         safe_changes = sanitize_text(changes)
+        
+        # Use Diff Data if available, otherwise fallback to the user's string
+        diff_text = f"EXACT JSON DIFF (Original vs Updated Sections):\n{sanitize_text(original_content)}" if original_content else f"CHANGES REQUESTED:\n{safe_changes}"
         
         # 1. Automate Issuance Date
         current_date = datetime.datetime.now().strftime("%d %B %Y")
@@ -52,10 +86,9 @@ class CorrigendumGenerator:
         prompt = f"""You are a senior banking procurement officer at {bank_name}. 
 Generate a formal 'Corrigendum Notice' that clearly communicates RFP updates to all participating vendors.
 
-ORIGINAL RFP CONTEXT (Sample):
-{safe_original}...
+{diff_text}
 
-SPECIFIC CHANGES MADE:
+USER CHANGE REQUEST:
 {safe_changes}
 
 MANDATORY FORMATTING INSTRUCTIONS:
@@ -63,10 +96,13 @@ MANDATORY FORMATTING INSTRUCTIONS:
 2. HEADER: '{bank_name} - {division}'.
 3. INCLUDE: A unique 'Corrigendum Identification Number' (e.g., IB/CORR/2026/00X).
 4. DATE OF ISSUANCE: {current_date} (MANDATORY).
-5. COMPARISON TABLE: Present changes in a clear, text-based table format:
-   - SECTION / CLAUSE REFERENCE
-   - ORIGINAL PROVISION (Briefly summarized)
-   - REVISED PROVISION (The new official language)
+5. COMPARISON TABLE: Present changes in a beautifully structured <table>:
+   - CRITICAL RULE: You MUST ONLY include rows in the table where the text has ACTUALLY been modified, added, or deleted! 
+   - If the Original Provision and Revised Provision are exactly the same, DO NOT include that clause in the table. Exclude all unchanged data.
+   - DELETIONS: If a text or clause exists in the Original Provision but was completely removed in the Revised version, you MUST include the row! Put the original text in Column 2, and explicitly write "[DELETED / REMOVED]" in Column 3.
+   - Column 1: SECTION / CLAUSE REFERENCE
+   - Column 2: ORIGINAL PROVISION
+   - Column 3: REVISED PROVISION
 6. DEADLINES: Explicitly state if the 'Bid Submission Deadline' has changed.
 7. ISSUING AUTHORITY:
    - Name: {officer}
@@ -74,8 +110,10 @@ MANDATORY FORMATTING INSTRUCTIONS:
    - Location: {location}
 8. CLOSING: A standard legal disclaimer stating all other terms and conditions remain unchanged.
 9. TONE: Formal, precise, and authoritative. 
-10. DO NOT use markdown symbols like '**' or '###'. Use plain text capitalization for headings.
-11. DO NOT use placeholders like '[Insert Date]'. 
+10. TONE: Formal, precise, and authoritative. 
+11. DO NOT use placeholders like '[Insert Date]'.
+12. OUTPUT FORMAT: You must output your response ENTIRELY in beautiful, semantic HTML. Use tags like <h2>, <p>, and a beautifully structured <table> for the comparison. Use Tailwind CSS utility classes inline in the tags to make it look incredibly premium (e.g., <table class="w-full text-sm border-collapse rounded-xl overflow-hidden shadow-sm bg-white">, <th class="bg-[#0033a0] text-white text-left p-4 font-bold uppercase tracking-widest text-[10px]">, <td class="p-4 border-t border-slate-100 text-slate-700 font-medium">, <h2 class="text-xl font-black text-[#0a1628] mb-4">, <p class="mb-4 text-slate-600 leading-relaxed">). 
+ABSOLUTELY NO MARKDOWN. Do NOT wrap your response in ```html blocks or any JSON structure. Return ONLY the raw HTML string.
 """
 
         if self.decision_engine.use_mistral:
@@ -116,7 +154,9 @@ MANDATORY FORMATTING INSTRUCTIONS:
                     )
                     
                     notice_content = response.choices[0].message.content.strip()
-                    logging.info("Corrigendum notice generated successfully.")
+                    # Post-process to remove any accidental bolding/markdown
+                    notice_content = notice_content.replace("**", "")
+                    logging.info("Corrigendum notice generated successfully and sanitized.")
                     return notice_content
                     
                 except Exception as e:
@@ -154,6 +194,7 @@ MANDATORY INSTRUCTIONS:
 2. The value for each key must be the fully rewritten, updated JSON object for that specific section.
 3. Keep the exact same section schema. ONLY modify the specific dates, amounts, or clauses requested.
 4. If the changes affect deadlines, ensure you update the schedule in the relevant sections.
+5. CASCADING GLOBAL CONSISTENCY: You MUST scan the ENTIRE document. Whatever changes are requested, you must intelligently hunt for and update ALL related downstream dependencies, figures, context, or cross-references across EVERY single section to ensure absolute logical consistency and zero contradictions anywhere in the RFP!
 
 EXAMPLE FORMAT:
 {{
@@ -201,15 +242,24 @@ EXAMPLE FORMAT:
                     # Surgically merge the updated nodes back into the original document!
                     original_sections = json.loads(original_json_str)
                     
+                    old_nodes = {}
                     for i, sec in enumerate(original_sections):
                         sec_id = str(sec.get("section_id", sec.get("num", "")))
                         if sec_id in updated_nodes:
+                            old_nodes[sec_id] = sec # Capture the 'before' state
                             original_sections[i] = updated_nodes[sec_id]
                             logging.info(f"Surgically applied updates to Section {sec_id}")
 
                     final_merged_json = json.dumps(original_sections)
+                    
+                    # Create precise diff for the Notice generator
+                    diff_data = {
+                        "original_sections": old_nodes,
+                        "updated_sections": updated_nodes
+                    }
+                    
                     logging.info("Intelligent surgical update completed without data loss.")
-                    return final_merged_json
+                    return final_merged_json, json.dumps(diff_data)
                     
                 except Exception as e:
                     if "429" in str(e) and attempt < max_retries - 1:
