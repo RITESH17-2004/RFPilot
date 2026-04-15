@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, AlertCircle, FileText, Send, CheckCircle, RefreshCw, Rocket, Save, PenTool, Settings, Undo2, Check } from 'lucide-react';
+import { ArrowLeft, Loader2, AlertCircle, FileText, Send, CheckCircle, RefreshCw, Rocket, Save, PenTool, Settings, Undo2, Check, Map } from 'lucide-react';
 import Link from 'next/link';
 import DocumentEditor from '@/components/DocumentEditor';
 

@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+import hashlib
+
+# Monkey-patch hashlib.md5 to handle 'usedforsecurity' error in some environments
+original_md5 = hashlib.md5
+def patched_md5(*args, **kwargs):
+    kwargs.pop('usedforsecurity', None)
+    return original_md5(*args, **kwargs)
+hashlib.md5 = patched_md5
+
 """
 Main FastAPI application file for the LLM-Powered Intelligent Query-Retrieval System.
 This file sets up the FastAPI application, defines the API endpoints, and handles the
@@ -19,13 +28,6 @@ import time
 import torch
 import os
 import hashlib
-
-# Monkey-patch hashlib.md5 to handle 'usedforsecurity' error in some environments
-original_md5 = hashlib.md5
-def patched_md5(*args, **kwargs):
-    kwargs.pop('usedforsecurity', None)
-    return original_md5(*args, **kwargs)
-hashlib.md5 = patched_md5
 
 from src.rag.document_text_extractor import DocumentTextExtractor
 from src.rag.embedding_generator import EmbeddingGenerator
@@ -124,8 +126,10 @@ async def lifespan(app: FastAPI):
     app.state.request_logger = APIRequestLogger()
     app.state.file_validator = InputValidator()
 
-    # Mount static files directory for PDFs
-    app.mount("/static/rfps", StaticFiles(directory="generated_rfps"), name="rfps")
+    # Mount static files directory for PDFs using an absolute path
+    static_rfp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "generated_rfps")
+    os.makedirs(static_rfp_dir, exist_ok=True)
+    app.mount("/static/rfps", StaticFiles(directory=static_rfp_dir), name="rfps")
 
     yield
     
@@ -146,7 +150,7 @@ app = FastAPI(
 # Add CORS middleware for cross-origin requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"], # Specified origins for local development
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -237,6 +241,15 @@ class AuditLogResponse(BaseModel):
     rfp_id: Optional[int]
     details: Optional[str]
     actor: Optional[str]
+    created_at: str
+
+class RFPVersionResponse(BaseModel):
+    """Response model for RFP versions (Time Machine)."""
+    id: int
+    rfp_id: int
+    version_number: int
+    content: str
+    change_summary: Optional[str]
     created_at: str
 
 # NEW AUTH & VENDOR MODELS
@@ -382,19 +395,34 @@ async def take_vendor_action(vendor_id: int, request: VendorActionRequest, db: S
     
     return {"message": f"Vendor {new_status} successfully."}
 
-# Helper for Audit Logging
+# Helper for Audit Logging with Cryptographic Chaining
 def record_audit(db: Session, event_type: str, rfp_id: Optional[int], details: str, actor: str = "SYSTEM"):
+    """
+    Records a system event with cryptographic chaining to ensure immutability.
+    Each log entry contains a hash of itself and the previous entry's hash.
+    """
     try:
+        # Get the latest audit log to retrieve its hash
+        last_log = db.query(src.models.AuditLog).order_by(src.models.AuditLog.id.desc()).first()
+        prev_hash = last_log.hash if last_log else "GENESIS_BLOCK_00000000000000000000"
+        
+        # Prepare data for hashing
+        log_data = f"{event_type}|{rfp_id}|{details}|{actor}|{prev_hash}"
+        current_hash = hashlib.sha256(log_data.encode('utf-8')).hexdigest()
+
         log = src.models.AuditLog(
             event_type=event_type,
             rfp_id=rfp_id,
             details=details,
-            actor=actor
+            actor=actor,
+            previous_hash=prev_hash,
+            hash=current_hash
         )
         db.add(log)
         db.commit()
+        logging.info(f"Audit Log Recorded: {event_type} (Hash: {current_hash[:10]}...)")
     except Exception as e:
-        logging.error(f"Failed to record audit log: {e}")
+        logging.error(f"Failed to record cryptographic audit log: {e}")
 
 @app.get("/audit-logs", response_model=List[AuditLogResponse])
 async def get_audit_logs(db: Session = Depends(get_db)):
@@ -505,7 +533,7 @@ async def update_rfp_and_generate_corrigendum(rfp_id: int, request: RFPUpdateReq
             )
 
         # 2. Generate formal Corrigendum Notice using LLM
-        version_num = len(rfp.corrigenda) + 1
+        version_num = len(rfp.versions) + 1
         notice_content = await app.state.corrigendum_generator.generate_notice(
             diff_data, 
             None, 
@@ -526,6 +554,16 @@ async def update_rfp_and_generate_corrigendum(rfp_id: int, request: RFPUpdateReq
             full_notice=notice_content
         )
         db.add(new_corrigendum)
+        
+        # 4b. Save Snapshot for Time Machine
+        new_version_snapshot = src.models.RFPVersion(
+            rfp_id=rfp_id,
+            version_number=version_num,
+            content=final_updated_content,
+            change_summary=request.change_summary
+        )
+        db.add(new_version_snapshot)
+        
         db.commit()
         db.refresh(new_corrigendum)
 
@@ -549,6 +587,12 @@ async def update_rfp_and_generate_corrigendum(rfp_id: int, request: RFPUpdateReq
 
         await app.state.vector_store.clear()
         await app.state.vector_store.add_documents(document_chunks, embeddings)
+        
+        # PERSIST TO DISK: Crucial for the query portal to see updates!
+        import hashlib
+        cache_filename = hashlib.sha256(f"rfp_doc_{rfp_id}".encode('utf-8')).hexdigest()
+        cache_filepath = os.path.join(app.state.cache_dir, cache_filename)
+        await app.state.vector_store.save_index(cache_filepath, plain_text_content)
 
         # 6. Re-generate PDF with updated content
         bank_name = rfp.project_details.get('bank_profile', {}).get('bank_name', 'Indian Bank')
@@ -602,6 +646,37 @@ async def get_rfp_corrigenda(rfp_id: int, db: Session = Depends(get_db)):
             full_notice=c.full_notice,
             created_at=str(c.created_at)
         ) for c in corrigenda]
+
+@app.get("/rfp/{rfp_id}/versions", response_model=List[RFPVersionResponse])
+async def get_rfp_versions(rfp_id: int, db: Session = Depends(get_db)):
+    """Fetches all snapshots (versions) for the Time Machine."""
+    versions = db.query(src.models.RFPVersion).filter(src.models.RFPVersion.rfp_id == rfp_id).order_by(src.models.RFPVersion.version_number.asc()).all()
+    return [RFPVersionResponse(
+        id=v.id,
+        rfp_id=v.rfp_id,
+        version_number=v.version_number,
+        content=v.content,
+        change_summary=v.change_summary,
+        created_at=str(v.created_at)
+    ) for v in versions]
+
+@app.get("/rfp/{rfp_id}/version/{version_number}", response_model=RFPVersionResponse)
+async def get_specific_rfp_version(rfp_id: int, version_number: int, db: Session = Depends(get_db)):
+    """Fetches a specific historical snapshot for the Time Machine."""
+    version = db.query(src.models.RFPVersion).filter(
+        src.models.RFPVersion.rfp_id == rfp_id,
+        src.models.RFPVersion.version_number == version_number
+    ).first()
+    if not version:
+        raise HTTPException(status_code=404, detail="Version not found")
+    return RFPVersionResponse(
+        id=version.id,
+        rfp_id=version.rfp_id,
+        version_number=version.version_number,
+        content=version.content,
+        change_summary=version.change_summary,
+        created_at=str(version.created_at)
+    )
 
 @app.post("/vendor/query", response_model=VendorQueryResponse)
 async def submit_vendor_query(request: VendorQueryRequest, db: Session = Depends(get_db)):
@@ -722,6 +797,16 @@ async def create_rfp_draft(request: RFPCreateRequest, db: Session = Depends(get_
         db.add(new_rfp)
         db.commit()
         db.refresh(new_rfp)
+
+        # Save Initial Version (v1.0) for Time Machine
+        initial_version = src.models.RFPVersion(
+            rfp_id=new_rfp.id,
+            version_number=1,
+            content=generated_content_json,
+            change_summary="Initial Draft Generation"
+        )
+        db.add(initial_version)
+        db.commit()
 
         # Record Audit
         record_audit(db, "RFP_CREATED", new_rfp.id, f"Draft RFP '{request.title}' initialized by bank officer.", request.bank_profile.contact_email)

@@ -307,6 +307,7 @@
 
         <!-- Tables -->
         {% for table in section.data_tables %}
+        {% if table is mapping and (table.headers or table.rows) %}
         <div class="table-container">
             <div class="table-title">Table {{ section.section_id }}.{{ loop.index }}: {{ table.table_title }}</div>
             <table>
@@ -328,6 +329,7 @@
                 </tbody>
             </table>
         </div>
+        {% endif %}
         {% endfor %}
 
         <!-- Regulatory Verbatim -->

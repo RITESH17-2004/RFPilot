@@ -2,6 +2,15 @@ import os
 import logging
 from typing import List, Dict, Any
 from jinja2 import Environment, FileSystemLoader
+import hashlib
+
+# Monkey-patch hashlib.md5 to handle 'usedforsecurity' error in some environments (e.g. FIPS)
+original_md5 = hashlib.md5
+def patched_md5(*args, **kwargs):
+    kwargs.pop('usedforsecurity', None)
+    return original_md5(*args, **kwargs)
+hashlib.md5 = patched_md5
+
 from xhtml2pdf import pisa
 import datetime
 

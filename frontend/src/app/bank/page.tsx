@@ -119,7 +119,14 @@ function DashboardContent() {
                                     </div>
                                     <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm">
                                         <table className="w-full text-left">
-                                            <thead className="bg-slate-50/50 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">
+                                            {/* <thead className="bg-slate-50/50 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">
+                                                <tr>
+                                                    <th className="px-10 py-5">RFP Identifier</th>
+                                                    <th className="px-10 py-5">Mission Title</th>
+                                                    <th className="px-10 py-5 text-right">Compliance Status</th>
+                                                </tr>
+                                            </thead> */}
+                                            <thead className="bg-[#0a1628] text-[10px] font-black uppercase tracking-[0.15em] text-[#c8a96a]">
                                                 <tr>
                                                     <th className="px-10 py-5">RFP Identifier</th>
                                                     <th className="px-10 py-5">Mission Title</th>

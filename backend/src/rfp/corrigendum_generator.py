@@ -13,8 +13,18 @@ except ImportError:
     Mistral = None
 
 def sanitize_text(text: str) -> str:
-    """Removes non-ASCII characters that cause encoding issues in some environments."""
+    """
+    Removes non-ASCII characters that cause encoding issues, but normalizes 
+    common punctuation like smart quotes to their ASCII equivalents first.
+    """
     if not text: return ""
+    
+    # Normalize smart quotes and common non-ASCII punctuation
+    text = text.replace('“', '"').replace('”', '"')
+    text = text.replace('‘', "'").replace('’', "'")
+    text = text.replace('—', '-').replace('–', '-') # Em and en dashes
+    
+    # After normalization, safely strip remaining non-ASCII characters if any
     return re.sub(r'[^\x00-\x7F]+', ' ', text)
 
 class CorrigendumGenerator:

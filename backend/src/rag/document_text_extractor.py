@@ -378,11 +378,12 @@ class DocumentTextExtractor:
     def preprocess_text(self, text: str) -> str:
         """
         Preprocesses text by cleaning escape characters, normalizing whitespace,
-        and removing non-alphanumeric characters (except common punctuation).
+        and preserving essential punctuation like apostrophes.
         """
         text = clean_escape_characters(text)
         text = re.sub(r'\s+', ' ', text)
-        text = re.sub(r'[^\w\s\.\,\;\:\!\?\-\(\)]', '', text)
+        # Preserve apostrophes ('), percent signs (%), and standard punctuation
+        text = re.sub(r"[^\w\s\.\,\;\:\!\?\-\(\)\'\%]", '', text)
         return text.strip()
 
     async def shutdown(self):

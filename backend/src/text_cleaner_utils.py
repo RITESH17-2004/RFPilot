@@ -6,20 +6,15 @@ def clean_escape_characters(text: str) -> str:
     Removes various unwanted escape characters and normalizes text for cleaner processing.
     Handles backslashes, newlines, tabs, and converts smart quotes to straight quotes.
     """
-    # Normalize Unicode characters to their closest ASCII representation
-    text = unicodedata.normalize('NFKD', text)
-    
-    # Replace common escape sequences with spaces or remove them
-    text = text.replace('\n', ' ')    # Newline to space
-    text = text.replace('\t', ' ')    # Tab to space
-    text = text.replace('\r', '')     # Carriage return removed
-    text = text.replace('\f', ' ')    # Form feed to space
-    text = text.replace('\b', ' ')    # Backspace to space
-    text = text.replace('\v', ' ')    # Vertical tab to space
+    if not text: return ""
 
-    # Normalize quotes: convert curly quotes to straight quotes
+    # Normalize quotes FIRST before any Unicode normalization
     text = text.replace('“', '"').replace('”', '"')  # Smart double quotes
     text = text.replace('‘', "'").replace('’', "'")  # Smart single quotes
+    text = text.replace('`', "'").replace('´', "'")  # Backticks and other accents
+    
+    # Use NFC normalization (Canonical Composition) which is safer for most systems
+    text = unicodedata.normalize('NFC', text)
     
     # Remove any remaining backslashes (e.g., \\, \', \")
     text = re.sub(r'\\+', ' ', text)

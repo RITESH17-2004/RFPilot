@@ -91,7 +91,7 @@ export default function DocumentEditor({ rfpContent, onChange }: DocumentEditorP
           {/* Document content area with page-like margins */}
           <div className="px-16 py-14 text-[#2c3e50]" style={{ fontSize: '14px', lineHeight: 1.75 }}>
 
-            {sections.map((section, sIndex) => (
+            {sections?.map((section, sIndex) => (
               <div key={sIndex} className={sIndex > 0 ? 'mt-16 pt-12 border-t border-slate-200' : ''}>
 
                 {/* Section Header */}
@@ -158,7 +158,7 @@ export default function DocumentEditor({ rfpContent, onChange }: DocumentEditorP
                       <table className="w-full border-collapse">
                         <thead>
                           <tr>
-                            {table.headers.map((h, hIdx) => (
+                            {table.headers?.map((h, hIdx) => (
                               <th key={hIdx} className="bg-[#1a437f] text-white p-3 text-[11px] font-bold uppercase text-left tracking-wider">
                                 <EditableSpan
                                   value={h}
@@ -174,9 +174,9 @@ export default function DocumentEditor({ rfpContent, onChange }: DocumentEditorP
                           </tr>
                         </thead>
                         <tbody>
-                          {table.rows.map((row, rIdx) => (
+                          {table.rows?.map((row, rIdx) => (
                             <tr key={rIdx} className="even:bg-[#f8f9fb] hover:bg-[#eef1f6] transition-colors">
-                              {row.map((cell, cellIdx) => (
+                              {row?.map((cell, cellIdx) => (
                                 <td key={cellIdx} className="p-3 border-t border-[#e5e7eb] text-[13px] align-top leading-[1.5] text-[#374151]">
                                   <EditableDiv
                                     value={cell}
@@ -217,3 +217,4 @@ export default function DocumentEditor({ rfpContent, onChange }: DocumentEditorP
     </div>
   );
 }
+

@@ -254,6 +254,7 @@ CORE PRINCIPLES:
 • Never add external knowledge, calculations, or assumptions.
 • If the question is asked in a particular language, respond in that same language while following all other principles.
 • Understand and interpret closely related terms (e.g., "PED" and "pre-existing diseases") as referring to the same concept if the context supports it.
+• IMPORTANT: Do NOT use Markdown formatting (like **, _, or #) in your response. Provide only clean, professional plain text.
 
 SOURCE CONTENT FIDELITY:
 • Mathematical operations: Report results exactly as shown (e.g., if source shows “9+5=22”, answer “22”). Do not perform calculations yourself.
@@ -452,6 +453,9 @@ Question: {query}
 
         # Replace double quotes with single quotes to avoid JSON escaping issues
         answer = answer.replace('"', "'")
+
+        # Strip double asterisks (Markdown bold) as frontend doesn't render Markdown
+        answer = answer.replace('**', '')
 
         # Ensure the answer ends with a period for consistency
         if not answer.endswith('.'):
