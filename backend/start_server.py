@@ -820,7 +820,7 @@ async def publish_rfp(rfp_id: int, db: Session = Depends(get_db)):
 @app.get("/rfps", response_model=List[RFPResponse])
 async def list_rfps(db: Session = Depends(get_db)):
     """Lists all RFPs."""
-    rfps = db.query(src.models.RFP).all()
+    rfps = db.query(src.models.RFP).order_by(src.models.RFP.id.asc()).all()
     return [RFPResponse(
             id=r.id,
             title=r.title,

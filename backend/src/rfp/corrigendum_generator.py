@@ -96,7 +96,8 @@ MANDATORY FORMATTING INSTRUCTIONS:
 2. HEADER: '{bank_name} - {division}'.
 3. INCLUDE: A unique 'Corrigendum Identification Number' (e.g., IB/CORR/2026/00X).
 4. DATE OF ISSUANCE: {current_date} (MANDATORY).
-5. COMPARISON TABLE: Present changes in a beautifully structured <table>:
+5. DYNAMIC SUBJECT LINE: You MUST autonomously generate a highly specific, adaptive Subject Line based on the nature of the requested changes. DO NOT use a generic subject. (e.g., deeply analyze the change and write "SUBJECT: Change in Bid Submission Timeline" or "SUBJECT: Modification of Phase 1 Cloud Strategy Architecture").
+6. COMPARISON TABLE: Present changes in a beautifully structured <table>:
    - CRITICAL RULE: You MUST ONLY include rows in the table where the text has ACTUALLY been modified, added, or deleted! 
    - If the Original Provision and Revised Provision are exactly the same, DO NOT include that clause in the table. Exclude all unchanged data.
    - DELETIONS: If a text or clause exists in the Original Provision but was completely removed in the Revised version, you MUST include the row! Put the original text in Column 2, and explicitly write "[DELETED / REMOVED]" in Column 3.
@@ -149,7 +150,7 @@ ABSOLUTELY NO MARKDOWN. Do NOT wrap your response in ```html blocks or any JSON 
                             model="mistral-small-latest",
                             messages=messages,
                             temperature=0.3, 
-                            max_tokens=1500
+                            max_tokens=4000
                         )
                     )
                     
